@@ -73,8 +73,8 @@ class DualSteeringToDiffDrive
 
         /**
          * @brief convert command from dual steer kinematics to diff-drive kinematics.
-         * @param linear_velocity_x x axis linear velocity wrt to global frame
-         * @param linear_velocity_y y axis linear velocity wrt to global frame
+         * @param linear_velocity_x x axis linear velocity wrt to system frame (not world frame)
+         * @param linear_velocity_y y axis linear velocity wrt to system frame (not world frame)
          * @param angular_velocity_z angular velocity
          */
         void convertCommand(double& linear_velocity_x, double& linear_velocity_y, double& angular_velocity_z);
