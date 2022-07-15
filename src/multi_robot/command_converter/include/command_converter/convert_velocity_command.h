@@ -73,11 +73,11 @@ class DualSteeringToDiffDrive
 
         /**
          * @brief convert command from dual steer kinematics to diff-drive kinematics.
-         * @param linear_velocity_x x axis linear velocity wrt to system frame (not world frame)
-         * @param linear_velocity_y y axis linear velocity wrt to system frame (not world frame)
-         * @param angular_velocity_z angular velocity
+         * @param linear_velocity robot linear velocity command
+         * @param steer_angle robot steer angle command
+         * @param dt time interval
          */
-        void convertCommand(double& linear_velocity_x, double& linear_velocity_y, double& angular_velocity_z);
+        void convertLinearVelocityToDiffDriveCommand(double& linear_velocity_command, double& steer_angle_command, double& dt);
 
         /**
          * @brief dual steering wheel kinematics for velocity command.
@@ -85,8 +85,14 @@ class DualSteeringToDiffDrive
          * @param linear_velocity_y y axis linear velocity
          * @param angular_velocity_z angular velocity
          */
-        void getDualWheelsCommand(double& linear_velocity_x, double& linear_velocity_y, double& angular_velocity_z);
+        void getDualWheelsCommand(double& linear_velocity_x_command, double& linear_velocity_y_command, double& angular_velocity_z_command);
         
+        /**
+         * @brief convert wheel linear velocity x, y command to steer angle and linear velocity command.
+         * @param wheel_linear_velocity_x wheel_linear_velocity_x
+         * @param wheel_linear_velocity_y wheel_linear_velocity_y
+         */
+        void convertWheelLinearVelocityToSteerLinearVelocityCommand(double& wheel_linear_velocity_x_command, double& wheel_linear_velocity_y_command);
 
 };
 } // namespace ConvertVelocityCommand

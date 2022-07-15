@@ -36,45 +36,24 @@ namespace ConvertVelocityCommand
         return true;
     }
 
-    void DualSteeringToDiffDrive::convertCommand(double& linear_velocity_x, double& linear_velocity_y, double& angular_velocity_z)
+    void DualSteeringToDiffDrive::convertLinearVelocityToDiffDriveCommand(double& linear_velocity_command, double& steer_angle_command, double& dt)
     {
-        if(fabs(angular_velocity_z) > 0)
-        {
-            getDualWheelsCommand(linear_velocity_x, linear_velocity_y, angular_velocity_z);
-            double linear_velocity_sum = std::sqrt(linear_velocity_x*linear_velocity_x + linear_velocity_y*linear_velocity_y);
-            double linear_velocity_theta = std::atan2(linear_velocity_y, linear_velocity_x);
-            double velocity_radius = linear_velocity_sum/angular_velocity_z;
-
-            double front_velocity_radius = std::sqrt((robot_distance_/2)*(robot_distance_/2) 
-                                            +velocity_radius*velocity_radius 
-                                            -2*(robot_distance_/2)*velocity_radius*cos(linear_velocity_theta + M_PI/2));
-            
-            double rear_velocity_radius = std::sqrt((robot_distance_/2)*(robot_distance_/2) 
-                                           +velocity_radius*velocity_radius 
-                                           -2*(robot_distance_/2)*velocity_radius*cos(linear_velocity_theta - M_PI/2));
-
-            double front_robot_linear_velocity = std::sqrt(wheels_velocity_command_.front_wheel_linear_velocity_x*wheels_velocity_command_.front_wheel_linear_velocity_x
-                                                          +wheels_velocity_command_.front_wheel_linear_velocity_y*wheels_velocity_command_.front_wheel_linear_velocity_y); 
-
-            double front_robot_angular_velocity = front_robot_angular_velocity / front_velocity_radius;
-
-            double rear_robot_angular_velocity = rear_robot_angular_velocity / rear_velocity_radius;
-
-            double rear_robot_linear_velocity = std::sqrt(wheels_velocity_command_.rear_wheel_linear_velocity_x*wheels_velocity_command_.rear_wheel_linear_velocity_x
-                                                         +wheels_velocity_command_.rear_wheel_linear_velocity_y*wheels_velocity_command_.rear_wheel_linear_velocity_y);
-        }
-        else
-        {
-            // No idea ...
-        }
+        // linear_velocity remains
+        // double angular_velocity = (steer_angle_command - current_steer_angle)/dt;
     }
 
-    void DualSteeringToDiffDrive::getDualWheelsCommand(double& linear_velocity_x, double& linear_velocity_y, double& angular_velocity_z)
+    void DualSteeringToDiffDrive::getDualWheelsCommand(double& linear_velocity_x_command, double& linear_velocity_y_command, double& angular_velocity_z_command)
     {
-        wheels_velocity_command_.front_wheel_linear_velocity_x = linear_velocity_x;
-        wheels_velocity_command_.front_wheel_linear_velocity_y = linear_velocity_y + angular_velocity_z * robot_distance_ / 2;
-        wheels_velocity_command_.rear_wheel_linear_velocity_x = linear_velocity_x;
-        wheels_velocity_command_.rear_wheel_linear_velocity_y =  linear_velocity_y - angular_velocity_z * robot_distance_ / 2;
+        wheels_velocity_command_.front_wheel_linear_velocity_x = linear_velocity_x_command;
+        wheels_velocity_command_.front_wheel_linear_velocity_y = linear_velocity_y_command + angular_velocity_z_command * robot_distance_ / 2;
+        wheels_velocity_command_.rear_wheel_linear_velocity_x = linear_velocity_x_command;
+        wheels_velocity_command_.rear_wheel_linear_velocity_y =  linear_velocity_y_command - angular_velocity_z_command * robot_distance_ / 2;
+    }
+
+    void DualSteeringToDiffDrive::convertWheelLinearVelocityToSteerLinearVelocityCommand(double& wheel_linear_velocity_x_command, double& wheel_linear_velocity_y_command)
+    {
+        double linear_velocity = std::sqrt(wheel_linear_velocity_x_command*wheel_linear_velocity_x_command + wheel_linear_velocity_y_command*wheel_linear_velocity_y_command);
+        double steer_angle = std::atan2(wheel_linear_velocity_y_command, wheel_linear_velocity_x_command);
     }
 
 
