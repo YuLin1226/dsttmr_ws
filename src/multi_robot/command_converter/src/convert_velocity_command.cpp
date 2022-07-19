@@ -36,10 +36,10 @@ namespace ConvertVelocityCommand
         return true;
     }
 
-    void DualSteeringToDiffDrive::convertLinearVelocityToDiffDriveCommand(double& linear_velocity_command, double& steer_angle_command, double& dt)
+    void DualSteeringToDiffDrive::convertSteerLinearVelocityToDiffDriveCommand(double& linear_velocity_command, double& steer_angle_command, double& current_steer_pos, double& dt, double& vx, double&w)
     {
-        // linear_velocity remains
-        // double angular_velocity = (steer_angle_command - current_steer_angle)/dt;
+        vx = linear_velocity_command;
+        w = (steer_angle_command - current_steer_pos)/dt;
     }
 
     void DualSteeringToDiffDrive::getDualWheelsCommand(double& linear_velocity_x_command, double& linear_velocity_y_command, double& angular_velocity_z_command)
@@ -50,10 +50,18 @@ namespace ConvertVelocityCommand
         wheels_velocity_command_.rear_wheel_linear_velocity_y =  linear_velocity_y_command - angular_velocity_z_command * robot_distance_ / 2;
     }
 
-    void DualSteeringToDiffDrive::convertWheelLinearVelocityToSteerLinearVelocityCommand(double& wheel_linear_velocity_x_command, double& wheel_linear_velocity_y_command)
+    void DualSteeringToDiffDrive::convertWheelLinearVelocityToSteerLinearVelocityCommand(double& wheel_linear_velocity_x_command, double& wheel_linear_velocity_y_command, double& linear_velocity_command, double& steer_angle_command)
     {
-        double linear_velocity = std::sqrt(wheel_linear_velocity_x_command*wheel_linear_velocity_x_command + wheel_linear_velocity_y_command*wheel_linear_velocity_y_command);
-        double steer_angle = std::atan2(wheel_linear_velocity_y_command, wheel_linear_velocity_x_command);
+        linear_velocity_command = std::sqrt(wheel_linear_velocity_x_command*wheel_linear_velocity_x_command + wheel_linear_velocity_y_command*wheel_linear_velocity_y_command);
+        steer_angle_command = std::atan2(wheel_linear_velocity_y_command, wheel_linear_velocity_x_command);
+    }
+
+
+    void DualSteeringToDiffDrive::updateRobotDistanceByProbabilistics(geometry_msgs::PoseWithCovarianceStamped& coworker, geometry_msgs::PoseWithCovarianceStamped& myself)
+    {
+        // argument should be changed to PoseTwistWithCovarianceStamped type.
+
+        // How to calculate new robot distance by probabilistic method?
     }
 
 

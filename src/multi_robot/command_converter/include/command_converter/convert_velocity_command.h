@@ -3,7 +3,7 @@
 
 #include "ros/ros.h"
 #include <ros/callback_queue.h>
-
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 
 namespace ConvertVelocityCommand
 {
@@ -75,9 +75,12 @@ class DualSteeringToDiffDrive
          * @brief convert command from dual steer kinematics to diff-drive kinematics.
          * @param linear_velocity robot linear velocity command
          * @param steer_angle robot steer angle command
+         * @param current_steer_pos last steer position
          * @param dt time interval
+         * @param vx diff drive linear_velocity (vx) command
+         * @param w diff drive angular_velocity (w) command
          */
-        void convertLinearVelocityToDiffDriveCommand(double& linear_velocity_command, double& steer_angle_command, double& dt);
+        void convertSteerLinearVelocityToDiffDriveCommand(double& linear_velocity_command, double& steer_angle_command, double& current_steer_pos, double& dt, double& vx, double&w);
 
         /**
          * @brief dual steering wheel kinematics for velocity command.
@@ -92,7 +95,15 @@ class DualSteeringToDiffDrive
          * @param wheel_linear_velocity_x wheel_linear_velocity_x
          * @param wheel_linear_velocity_y wheel_linear_velocity_y
          */
-        void convertWheelLinearVelocityToSteerLinearVelocityCommand(double& wheel_linear_velocity_x_command, double& wheel_linear_velocity_y_command);
+        void convertWheelLinearVelocityToSteerLinearVelocityCommand(double& wheel_linear_velocity_x_command, double& wheel_linear_velocity_y_command, double& linear_velocity_command, double& steer_angle_command);
+
+
+        /**
+         * @brief update new robots' distance by probabilistic method.
+         * @param coworker pose & twist cov with stamped messsage from coworker (this may have time delat).
+         * @param myself pose & twist cov with stamped messsage from myself.
+         */
+        void updateRobotDistanceByProbabilistics(geometry_msgs::PoseWithCovarianceStamped& coworker, geometry_msgs::PoseWithCovarianceStamped& myself);
 
 };
 } // namespace ConvertVelocityCommand
