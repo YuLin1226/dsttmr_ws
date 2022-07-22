@@ -62,6 +62,15 @@ namespace ConvertVelocityCommand
         // argument should be changed to PoseTwistWithCovarianceStamped type.
 
         // How to calculate new robot distance by probabilistic method?
+
+        // Information:
+        // pose & twist from coworker (time delay, large covariance).
+        // pose & twist from self (current time, small covariance).
+        // These information are independent, so I think a system model is needed for processing robot distance by methods similar to kalman filter.
+
+        // Others:
+        // If informations are robot_distances calculated from different agent, these are dependent, so they can be processed by covariance intersection or similar methods.
+        
     }
 
 
