@@ -64,5 +64,9 @@ namespace ConvertVelocityCommand
         // How to calculate new robot distance by probabilistic method?
     }
 
+    void DualSteeringToDiffDrive::combineTwoProbabilisticDistributions(const Eigen::VectorXd& mu1, const Eigen::MatrixXd& cov1, const Eigen::VectorXd& mu2, const Eigen::MatrixXd& cov2, const Eigen::VectorXd& combined_mu, const Eigen::MatrixXd& combined_cov)
+    {
+        // Method noted in my hackmd: https://hackmd.io/qft09FZtSSyRbofPZj7YbA
+    }
 
 } // namespace ConvertVelocityCommand

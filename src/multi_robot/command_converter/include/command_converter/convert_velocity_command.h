@@ -4,6 +4,7 @@
 #include "ros/ros.h"
 #include <ros/callback_queue.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <Eigen/Dense>
 
 namespace ConvertVelocityCommand
 {
@@ -104,6 +105,15 @@ class DualSteeringToDiffDrive
          * @param myself pose & twist cov with stamped messsage from myself.
          */
         void updateRobotDistanceByProbabilistics(geometry_msgs::PoseWithCovarianceStamped& coworker, geometry_msgs::PoseWithCovarianceStamped& myself);
+
+
+        /**
+         * @brief Combine  distributions by baysian method.
+         * @param mu mean of distribution.
+         * @param cov covariance matrix of the distribution.
+         */
+        void combineTwoProbabilisticDistributions(const Eigen::VectorXd& mu1, const Eigen::MatrixXd& cov1, const Eigen::VectorXd& mu2, const Eigen::MatrixXd& cov2, const Eigen::VectorXd& combined_mu, const Eigen::MatrixXd& combined_cov);
+
 
 };
 } // namespace ConvertVelocityCommand
