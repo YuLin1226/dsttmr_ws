@@ -1,3 +1,4 @@
 std_msgs/Header header
-geometry_msgs/Pose pose
-geometry_msgs/TwistWithCovariance twist
+geometry_msgs/PoseWithCovariance senderPose
+geometry_msgs/TwistWithCovariance senderTwist
+geometry_msgs/PoseWithCovariance receiverPose
