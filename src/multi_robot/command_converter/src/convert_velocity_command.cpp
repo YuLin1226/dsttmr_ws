@@ -27,6 +27,7 @@ namespace ConvertVelocityCommand
             // Throw error.
             return;
         }
+        probability_tools_ = std::make_shared<CalculationTools::ProbabilityTools>();
         initialized_ = true;
     }
 
@@ -71,11 +72,6 @@ namespace ConvertVelocityCommand
         // Others:
         // If informations are robot_distances calculated from different agent, these are dependent, so they can be processed by covariance intersection or similar methods.
         
-    }
-
-    void DualSteeringToDiffDrive::combineTwoProbabilisticDistributions(const Eigen::VectorXd& mu1, const Eigen::MatrixXd& cov1, const Eigen::VectorXd& mu2, const Eigen::MatrixXd& cov2, const Eigen::VectorXd& combined_mu, const Eigen::MatrixXd& combined_cov)
-    {
-        // Method noted in my hackmd: https://hackmd.io/qft09FZtSSyRbofPZj7YbA
     }
 
 } // namespace ConvertVelocityCommand

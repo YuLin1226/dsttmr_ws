@@ -5,6 +5,7 @@
 #include <ros/callback_queue.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <Eigen/Dense>
+#include "probability_tools.h"
 
 namespace ConvertVelocityCommand
 {
@@ -49,6 +50,10 @@ class DualSteeringToDiffDrive
         } wheels_velocity_command_;
 
         // wheels_velocity_storage
+
+
+        // probability tool pointer
+        std::shared_ptr<CalculationTools::ProbabilityTools> probability_tools_;
         
 
     public:
@@ -104,15 +109,7 @@ class DualSteeringToDiffDrive
          * @param coworker pose & twist cov with stamped messsage from coworker (this may have time delat).
          * @param myself pose & twist cov with stamped messsage from myself.
          */
-        void updateRobotDistanceByProbabilistics(geometry_msgs::PoseWithCovarianceStamped& coworker, geometry_msgs::PoseWithCovarianceStamped& myself);
-
-
-        /**
-         * @brief Combine  distributions by baysian method.
-         * @param mu mean of distribution.
-         * @param cov covariance matrix of the distribution.
-         */
-        void combineTwoProbabilisticDistributions(const Eigen::VectorXd& mu1, const Eigen::MatrixXd& cov1, const Eigen::VectorXd& mu2, const Eigen::MatrixXd& cov2, const Eigen::VectorXd& combined_mu, const Eigen::MatrixXd& combined_cov);
+        void updateRobotDistanceByProbabilistics(geometry_msgs::PoseWithCovarianceStamped& coworker, geometry_msgs::PoseWithCovarianceStamped& myself);     
 
 
 };
