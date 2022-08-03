@@ -1,5 +1,5 @@
-#ifndef _PROBABILITY_TOOLS_H_
-#define _PROBABILITY_TOOLS_H_
+#ifndef _MATH_TOOLS_H_
+#define _MATH_TOOLS_H_
 
 #include <Eigen/Dense>
 
@@ -7,7 +7,7 @@
 namespace CalculationTools
 {
 
-class ProbabilityTools
+class MathTools
 {
 private:
     
@@ -15,8 +15,8 @@ private:
 
 
 public:
-    ProbabilityTools(/* args */);
-    ~ProbabilityTools();
+    MathTools(/* args */);
+    ~MathTools();
 
 
 
