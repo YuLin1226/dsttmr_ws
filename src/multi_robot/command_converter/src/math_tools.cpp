@@ -1,5 +1,5 @@
 #include "command_converter/math_tools.h"
-
+#include <tf/tf.h>
 
 namespace CalculationTools
 {
@@ -17,6 +17,17 @@ namespace CalculationTools
         Eigen::VectorXd w1 = cov2*(cov1 + cov2).inverse();
         Eigen::VectorXd w2 = cov1*(cov1 + cov2).inverse();
         combined_mu = w1*mu1 + w2*mu2;
+    }
+
+    void MathTools::transformQuaternionToEuler(geometry_msgs::Quaternion& orientation, double& roll, double& pitch, double& yaw)
+    {
+        tf::Quaternion q(
+            orientation.x,
+            orientation.y,
+            orientation.z,
+            orientation.w);
+        tf::Matrix3x3 m(q);
+        m.getRPY(roll, pitch, yaw);
     }
 
 

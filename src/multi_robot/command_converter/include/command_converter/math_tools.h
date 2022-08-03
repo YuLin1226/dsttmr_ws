@@ -2,6 +2,9 @@
 #define _MATH_TOOLS_H_
 
 #include <Eigen/Dense>
+#include "ros/ros.h"
+#include <tf/tf.h>
+#include <geometry_msgs/Quaternion.h>
 
 
 namespace CalculationTools
@@ -27,7 +30,14 @@ public:
      */
     void combineTwoProbabilisticDistributions(const Eigen::VectorXd& mu1, const Eigen::MatrixXd& cov1, const Eigen::VectorXd& mu2, const Eigen::MatrixXd& cov2, Eigen::VectorXd& combined_mu, Eigen::MatrixXd& combined_cov);
 
-
+    /**
+     * @brief Transform quaternion to euler angles.
+     * @param orientation quaternion input
+     * @param roll euler angle
+     * @param pitch euler angle
+     * @param yaw euler angle
+     */
+    void transformQuaternionToEuler(geometry_msgs::Quaternion& orientation, double& roll, double& pitch, double& yaw);
 
 
 };
