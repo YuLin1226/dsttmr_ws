@@ -5,6 +5,7 @@
 #include "ros/ros.h"
 #include <tf/tf.h>
 #include <geometry_msgs/Quaternion.h>
+#include <geometry_msgs/PoseWithCovariance.h>
 
 
 namespace CalculationTools
@@ -39,7 +40,7 @@ public:
      */
     void transformQuaternionToEuler(geometry_msgs::Quaternion& orientation, double& roll, double& pitch, double& yaw);
 
-
+    void organizePoseCovToEigenData(geometry_msgs::PoseWithCovariance& PoseCov, Eigen::VectorXd& mu, Eigen::MatrixXd& cov);
 };
 } // namespace CalculationTools
 #endif
