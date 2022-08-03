@@ -2,6 +2,7 @@
 #include <cmath>
 
 
+
 namespace ConvertVelocityCommand
 {
     DualSteeringToDiffDrive::DualSteeringToDiffDrive():
@@ -27,7 +28,7 @@ namespace ConvertVelocityCommand
             // Throw error.
             return;
         }
-        probability_tools_ = std::make_shared<CalculationTools::ProbabilityTools>();
+        math_tools_ = std::make_shared<CalculationTools::MathTools>();
         initialized_ = true;
     }
 
@@ -58,20 +59,46 @@ namespace ConvertVelocityCommand
     }
 
 
-    void DualSteeringToDiffDrive::updateRobotDistanceByProbabilistics(geometry_msgs::PoseWithCovarianceStamped& coworker, geometry_msgs::PoseWithCovarianceStamped& myself)
+    void DualSteeringToDiffDrive::updateRobotDistanceByProbabilistics(geometry_msgs::PoseWithCovariance& coworker_posecov_from_coworker, 
+                                                                      geometry_msgs::PoseWithCovariance& myself_posecov_from_coworker,
+                                                                      geometry_msgs::PoseWithCovariance& coworker_posecov_from_myself, 
+                                                                      geometry_msgs::PoseWithCovariance& myself_posecov_from_myself)
     {
-        // argument should be changed to PoseTwistWithCovarianceStamped type.
+        /* Calculation Method:
+        1. Get coworker pose with cov and twist with cov to compute current pose of coworker.   
+        (This may involve time delay, so twist msg needs to be used to update the pose.)
+        2. Get myself pose with cov from coworker's observation.
+        3. Observe coworker pose with cov.
+        4. Get myself pose with cove from localization.
 
-        // How to calculate new robot distance by probabilistic method?
+        Use 1 & 3 to get filtered pose with cov of coworker.
+            2 & 4 to get filtered pose with cov of myself.
 
-        // Information:
-        // pose & twist from coworker (time delay, large covariance).
-        // pose & twist from self (current time, small covariance).
-        // These information are independent, so I think a system model is needed for processing robot distance by methods similar to kalman filter.
+        Use 2 filtered poses to calculate robot distance and update it.
+        */
+        Eigen::VectorXd coworker_pose_from_coworker_mu = Eigen::VectorXd::Zero(6);
+        Eigen::MatrixXd coworker_pose_from_coworker_cov = Eigen::MatrixXd::Zero(6,6);
+        Eigen::VectorXd myself_pose_from_coworker_mu = Eigen::VectorXd::Zero(6);
+        Eigen::MatrixXd myself_pose_from_coworker_cov = Eigen::MatrixXd::Zero(6,6);
+        Eigen::VectorXd coworker_pose_from_myself_mu = Eigen::VectorXd::Zero(6);
+        Eigen::MatrixXd coworker_pose_from_myself_cov = Eigen::MatrixXd::Zero(6,6);
+        Eigen::VectorXd myself_pose_from_myself_mu = Eigen::VectorXd::Zero(6);
+        Eigen::MatrixXd myself_pose_from_myself_cov = Eigen::MatrixXd::Zero(6,6);
 
-        // Others:
-        // If informations are robot_distances calculated from different agent, these are dependent, so they can be processed by covariance intersection or similar methods.
+        math_tools_->organizePoseCovToEigenData(coworker_posecov_from_coworker, coworker_pose_from_coworker_mu, coworker_pose_from_coworker_cov);
+        math_tools_->organizePoseCovToEigenData(myself_posecov_from_coworker, myself_pose_from_coworker_mu, myself_pose_from_coworker_cov);
+        math_tools_->organizePoseCovToEigenData(coworker_posecov_from_myself, coworker_pose_from_myself_mu, coworker_pose_from_myself_cov);
+        math_tools_->organizePoseCovToEigenData(myself_posecov_from_myself, myself_pose_from_myself_mu, myself_pose_from_myself_cov);
         
+        Eigen::VectorXd coworker_pose_filtered_mu = Eigen::VectorXd::Zero(6);
+        Eigen::MatrixXd coworker_pose_filtered_cov = Eigen::MatrixXd::Zero(6,6);
+        Eigen::VectorXd myself_pose_filtered_mu = Eigen::VectorXd::Zero(6);
+        Eigen::MatrixXd myself_pose_filtered_cov = Eigen::MatrixXd::Zero(6,6);
+
+        math_tools_->combineTwoProbabilisticDistributions(coworker_pose_from_coworker_mu, coworker_pose_from_coworker_cov, coworker_pose_from_myself_mu, coworker_pose_from_myself_cov, coworker_pose_filtered_mu, coworker_pose_filtered_cov);
+        math_tools_->combineTwoProbabilisticDistributions(myself_pose_from_coworker_mu, myself_pose_from_coworker_cov, myself_pose_from_myself_mu, myself_pose_from_myself_cov, myself_pose_filtered_mu, myself_pose_filtered_cov);
+        
+        robot_distance_ = std::sqrt((coworker_pose_filtered_mu[0] - myself_pose_filtered_mu[0])*(coworker_pose_filtered_mu[0] - myself_pose_filtered_mu[0]) + (coworker_pose_filtered_mu[1] - myself_pose_filtered_mu[1])*(coworker_pose_filtered_mu[1] - myself_pose_filtered_mu[1]));
     }
 
 } // namespace ConvertVelocityCommand

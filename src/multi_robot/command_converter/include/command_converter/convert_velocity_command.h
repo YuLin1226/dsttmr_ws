@@ -3,9 +3,9 @@
 
 #include "ros/ros.h"
 #include <ros/callback_queue.h>
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/PoseWithCovariance.h>
 #include <Eigen/Dense>
-#include "probability_tools.h"
+#include "math_tools.h"
 
 namespace ConvertVelocityCommand
 {
@@ -52,8 +52,8 @@ class DualSteeringToDiffDrive
         // wheels_velocity_storage
 
 
-        // probability tool pointer
-        std::shared_ptr<CalculationTools::ProbabilityTools> probability_tools_;
+        // math tool pointer
+        std::shared_ptr<CalculationTools::MathTools> math_tools_;
         
 
     public:
@@ -106,10 +106,11 @@ class DualSteeringToDiffDrive
 
         /**
          * @brief update new robots' distance by probabilistic method.
-         * @param coworker pose & twist cov with stamped messsage from coworker (this may have time delat).
-         * @param myself pose & twist cov with stamped messsage from myself.
          */
-        void updateRobotDistanceByProbabilistics(geometry_msgs::PoseWithCovarianceStamped& coworker, geometry_msgs::PoseWithCovarianceStamped& myself);     
+        void updateRobotDistanceByProbabilistics(geometry_msgs::PoseWithCovariance& coworker_pose_from_coworker, 
+                                                 geometry_msgs::PoseWithCovariance& myself_pose_from_coworker,
+                                                 geometry_msgs::PoseWithCovariance& coworker_pose_from_myself, 
+                                                 geometry_msgs::PoseWithCovariance& myself_pose_from_myself);     
 
 
 };
