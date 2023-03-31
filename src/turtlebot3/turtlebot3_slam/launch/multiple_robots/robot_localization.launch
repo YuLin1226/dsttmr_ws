@@ -1,0 +1,33 @@
+
+<launch>
+    <param name="/use_sim_time" value="true" />
+
+    <arg name="cartographer_localization_config" default="$(dirname)/../../config/multiple_robots" />
+    <arg name="map_pbstream_file" default="$(find turtlebot3_slam)/maps/test.pbstream" />
+    <arg name="scan_topic" default="/scan" />
+    <arg name="odom_topic" default="/odom" />
+    <arg name="imu_topic" default="/imu" />
+    <arg name="imu_carto_topic" default="/flat_imu" />
+    <arg name="robot_number" default="first" />
+
+    <node name="$(arg robot_number)_cartographer_node" pkg="cartographer_ros"
+        type="cartographer_node" args="
+            -configuration_directory $(arg cartographer_localization_config)
+            -configuration_basename cartographer_localization_$(arg robot_number).lua
+            -load_state_filename $(arg map_pbstream_file)"
+        output="screen">
+        <!-- <remap from="echoes" to="horizontal_laser_2d" /> -->
+        <remap from="scan" to="$(arg scan_topic)" />
+        <remap from="odom" to="$(arg odom_topic)" />
+        <remap from="imu" to="$(arg imu_carto_topic)" />
+    </node>
+
+    <node name="$(arg robot_number)_cartographer_occupancy_grid_node" pkg="cartographer_ros"
+        type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
+
+    <node pkg="turtlebot3_slam" type="flat_world_imu_node" name="$(arg robot_number)_flat_world_imu_node" output="screen">
+        <remap from="imu_in" to="$(arg imu_topic)" />
+        <remap from="imu_out" to="$(arg imu_carto_topic)" />
+    </node>
+    
+</launch>
