@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
 #include "fake_central_odom.h"
+#include <cmath>
 
 namespace DSTTMR
 {
@@ -37,6 +38,12 @@ namespace DSTTMR
         {
             getSecondOdomData();
         });
+        
+        // main thread
+        while(private_nh_.ok())
+        {
+            publishCentralOdomData();
+        }
     }
 
     void FakeCentralOdom::getFirstOdomData()
@@ -48,6 +55,10 @@ namespace DSTTMR
             {
                 listener.lookupTransform(first_base_footprint_, "/map",  
                                         ros::Time(0), transform);
+                first_robot_pose_.position_x = transform.getOrigin().x();
+                first_robot_pose_.position_y = transform.getOrigin().y();
+                tf::Quaternion q = transform.getRotation(); 
+                first_robot_pose_.rotation_yaw = tf::getYaw(q);
             }
             catch (tf::TransformException ex)
             {
@@ -67,6 +78,10 @@ namespace DSTTMR
             {
                 listener.lookupTransform(second_base_footprint_, "/map",  
                                         ros::Time(0), transform);
+                second_robot_pose_.position_x = transform.getOrigin().x();
+                second_robot_pose_.position_y = transform.getOrigin().y();
+                tf::Quaternion q = transform.getRotation(); 
+                second_robot_pose_.rotation_yaw = tf::getYaw(q);
             }
             catch (tf::TransformException ex)
             {
@@ -79,7 +94,14 @@ namespace DSTTMR
 
     void FakeCentralOdom::publishCentralOdomData()
     {
-        
+        // compute central robot position
+        central_robot_pose_.position_x = (first_robot_pose_.position_x + second_robot_pose_.position_x) / 2.0;
+        central_robot_pose_.position_y = (first_robot_pose_.position_y + second_robot_pose_.position_y) / 2.0;
+        // compute central robot yaw: atan2(dy, dx)
+        float dx = first_robot_pose_.position_x - second_robot_pose_.position_x;
+        float dy = first_robot_pose_.position_y - second_robot_pose_.position_y;
+        central_robot_pose_.rotation_yaw = atan2(dy, dx);
+        // publish data
     }
 
 } // namespace DSTTMR
