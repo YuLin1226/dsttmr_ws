@@ -1,3 +1,6 @@
+#if !defined(_FAKE_CENTRAL_ODOM_H_)
+#define _FAKE_CENTRAL_ODOM_H_
+
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
 #include <memory>
@@ -10,7 +13,7 @@ namespace DSTTMR
     class FakeCentralOdom
     {
         public:
-            static uint8_t SLEEP_TIME_IN_MS = 10;
+            
             void start();
             void stop();
             FakeCentralOdom();
@@ -23,6 +26,7 @@ namespace DSTTMR
             void publishCentralOdomData();
 
         private:
+            static inline const uint8_t SLEEP_TIME_IN_MS = 10;
             ros::NodeHandle private_nh_;
             tf::TransformListener first_odom_listener_, second_odom_listener_;
             std::thread first_thread_, second_thread_;
@@ -37,5 +41,7 @@ namespace DSTTMR
             
             
             
-    }
+    };
 } // namespace DSTTMR
+
+#endif // _FAKE_CENTRAL_ODOM_H_

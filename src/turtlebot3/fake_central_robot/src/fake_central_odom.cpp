@@ -1,7 +1,6 @@
-#include <ros/ros.h>
-#include <tf/transform_listener.h>
 #include "fake_central_odom.h"
 #include <cmath>
+#include <tf/tf.h>
 
 namespace DSTTMR
 {
@@ -25,7 +24,6 @@ namespace DSTTMR
         first_thread_.join();
         second_thread_.join();
     }
-
 
     void FakeCentralOdom::threadBody()
     {
@@ -51,6 +49,7 @@ namespace DSTTMR
         while (private_nh_.ok())
         {
             tf::StampedTransform transform;
+            tf::TransformListener listener;
             try
             {
                 listener.lookupTransform(first_base_footprint_, "/map",  
@@ -74,6 +73,7 @@ namespace DSTTMR
         while (private_nh_.ok())
         {
             tf::StampedTransform transform;
+            tf::TransformListener listener;
             try
             {
                 listener.lookupTransform(second_base_footprint_, "/map",  
@@ -107,8 +107,8 @@ namespace DSTTMR
 } // namespace DSTTMR
 
 
-// int main(int argc, char** argv)
-// {
+int main(int argc, char** argv)
+{
 //     ros::init(argc, argv, "my_tf_listener");
 //     ros::NodeHandle node;
 //     tf::TransformListener listener;
@@ -131,5 +131,5 @@ namespace DSTTMR
 
 //         rate.sleep();
 //     }
-//     return 0;
-// };
+    return 0;
+};

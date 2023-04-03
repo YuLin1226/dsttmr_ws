@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(fake_central_robot)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++17)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -22,10 +22,10 @@ catkin_package(
     tf
 )
 
-include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
+# include_directories(
+# # include
+#   ${catkin_INCLUDE_DIRS}
+# )
 
 add_executable(
   fake_central_odom_node 
@@ -34,4 +34,10 @@ add_executable(
 
 target_include_directories(fake_central_odom_node PUBLIC
   include/fake_central_robot
+  ${catkin_INCLUDE_DIRS}
+)
+
+target_link_libraries(
+  fake_central_odom_node
+  ${catkin_LIBRARIES}
 )
