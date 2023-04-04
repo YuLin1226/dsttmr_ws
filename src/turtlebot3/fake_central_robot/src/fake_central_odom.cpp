@@ -6,7 +6,9 @@ namespace DSTTMR
 {
     FakeCentralOdom::FakeCentralOdom(ros::NodeHandle private_nh)
     : private_nh_(private_nh)
-    , fake_central_base_footprint_("fake_central_base_footprint")
+    , fake_central_base_footprint_("/fake_central_base_footprint")
+    , first_base_footprint_("/first_robot_base_footprint")
+    , second_base_footprint_("/second_robot_base_footprint")
     {
         // retrive ros setting & parameters
     }
@@ -111,6 +113,7 @@ namespace DSTTMR
         transform.setRotation(q);
         broadcaster_.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/map", fake_central_base_footprint_));
         // where is map->odom, odom->base_footprint?
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
 } // namespace DSTTMR
