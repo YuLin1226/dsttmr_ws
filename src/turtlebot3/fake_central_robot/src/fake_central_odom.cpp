@@ -4,7 +4,9 @@
 
 namespace DSTTMR
 {
-    FakeCentralOdom::FakeCentralOdom()    
+    FakeCentralOdom::FakeCentralOdom(ros::NodeHandle private_nh)
+    : private_nh_(private_nh)
+    , fake_central_base_footprint_("fake_central_base_footprint")
     {
         // retrive ros setting & parameters
     }
@@ -46,10 +48,10 @@ namespace DSTTMR
 
     void FakeCentralOdom::getFirstOdomData()
     {
+        tf::StampedTransform transform;
+        tf::TransformListener listener;
         while (private_nh_.ok())
         {
-            tf::StampedTransform transform;
-            tf::TransformListener listener;
             try
             {
                 listener.lookupTransform(first_base_footprint_, "/map",  
@@ -70,10 +72,10 @@ namespace DSTTMR
 
     void FakeCentralOdom::getSecondOdomData()
     {
+        tf::StampedTransform transform;
+        tf::TransformListener listener;
         while (private_nh_.ok())
         {
-            tf::StampedTransform transform;
-            tf::TransformListener listener;
             try
             {
                 listener.lookupTransform(second_base_footprint_, "/map",  
@@ -102,6 +104,13 @@ namespace DSTTMR
         float dy = first_robot_pose_.position_y - second_robot_pose_.position_y;
         central_robot_pose_.rotation_yaw = atan2(dy, dx);
         // publish data
+        tf::Transform transform;
+        transform.setOrigin( tf::Vector3(central_robot_pose_.position_x, central_robot_pose_.position_y, 0.0) );
+        tf::Quaternion q;
+        q.setRPY(0, 0, central_robot_pose_.rotation_yaw);
+        transform.setRotation(q);
+        broadcaster_.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/map", fake_central_base_footprint_));
+        // where is map->odom, odom->base_footprint?
     }
 
 } // namespace DSTTMR
@@ -109,27 +118,10 @@ namespace DSTTMR
 
 int main(int argc, char** argv)
 {
-//     ros::init(argc, argv, "my_tf_listener");
-//     ros::NodeHandle node;
-//     tf::TransformListener listener;
+    ros::init(argc, argv, "fake_central_odom_node");
+    ros::NodeHandle nh, private_nh("~");
 
-//     ros::Rate rate(10.0);
-//     while (node.ok())
-//     {
-//         tf::StampedTransform transform;
-//         try
-//         {
-//             listener.lookupTransform("/turtle2", "/turtle1",  
-//                                     ros::Time(0), transform);
-//         }
-//         catch (tf::TransformException ex)
-//         {
-//             ROS_ERROR("%s",ex.what());
-//             ros::Duration(1.0).sleep();
-//         }
-//         // publish central odom tf
-
-//         rate.sleep();
-//     }
+    auto fake_central_odom_ptr = std::make_shared<DSTTMR::FakeCentralOdom>(private_nh);
+    fake_central_odom_ptr->start();
     return 0;
 };
