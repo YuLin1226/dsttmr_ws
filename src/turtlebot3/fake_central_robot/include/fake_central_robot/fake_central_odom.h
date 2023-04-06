@@ -34,13 +34,18 @@ namespace DSTTMR
             std::thread first_thread_, second_thread_;
             std::mutex first_mtx_, second_mtx_;
             std::string first_base_footprint_, second_base_footprint_, fake_central_base_footprint_;
+            std::string first_robot_odom_;
             struct RobotPose
             {
                 float position_x, position_y, rotation_yaw;
                 RobotPose():position_x{0.0}, position_y{0.0}, rotation_yaw{0.0} {}
             }first_robot_pose_, second_robot_pose_, central_robot_pose_;
             
-            
+            struct Odometry
+            {
+                float position_x, position_y, rotation_yaw;
+                RobotPose():position_x{0.0}, position_y{0.0}, rotation_yaw{0.0} {}
+            }odom_to_map_;
             
             
     };

@@ -9,6 +9,7 @@ namespace DSTTMR
     , fake_central_base_footprint_("/fake_central_base_footprint")
     , first_base_footprint_("/first_robot_base_footprint")
     , second_base_footprint_("/second_robot_base_footprint")
+    , first_robot_odom_("/first_robot_odom")
     {
         // retrive ros setting & parameters
     }
@@ -56,12 +57,22 @@ namespace DSTTMR
         {
             try
             {
-                listener.lookupTransform(first_base_footprint_, "/map",  
-                                        ros::Time(0), transform);
-                first_robot_pose_.position_x = transform.getOrigin().x();
-                first_robot_pose_.position_y = transform.getOrigin().y();
-                tf::Quaternion q = transform.getRotation(); 
-                first_robot_pose_.rotation_yaw = tf::getYaw(q);
+                {
+                    listener.lookupTransform(first_robot_odom_, "/map",  
+                                            ros::Time(0), transform);
+                    odom_to_map_.position_x = transform.getOrigin().x();
+                    odom_to_map_.position_y = transform.getOrigin().y();
+                    tf::Quaternion q = transform.getRotation(); 
+                    odom_to_map_.rotation_yaw = tf::getYaw(q);
+                }
+                {
+                    listener.lookupTransform(first_base_footprint_, "/map",  
+                                            ros::Time(0), transform);
+                    first_robot_pose_.position_x = transform.getOrigin().x();
+                    first_robot_pose_.position_y = transform.getOrigin().y();
+                    tf::Quaternion q = transform.getRotation(); 
+                    first_robot_pose_.rotation_yaw = tf::getYaw(q);
+                }
             }
             catch (tf::TransformException ex)
             {
