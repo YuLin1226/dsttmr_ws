@@ -34,7 +34,7 @@ namespace DSTTMR
             std::thread first_thread_, second_thread_;
             std::mutex first_mtx_, second_mtx_;
             std::string first_base_footprint_, second_base_footprint_, fake_central_base_footprint_;
-            std::string first_robot_odom_;
+            std::string first_robot_odom_, fake_central_odom_;
             struct RobotPose
             {
                 float position_x, position_y, rotation_yaw;

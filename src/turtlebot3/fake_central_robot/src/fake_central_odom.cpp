@@ -10,6 +10,7 @@ namespace DSTTMR
     , first_base_footprint_("/first_robot_base_footprint")
     , second_base_footprint_("/second_robot_base_footprint")
     , first_robot_odom_("/first_robot_odom")
+    , fake_central_odom_("/odom")
     {
         // retrive ros setting & parameters
     }
@@ -109,22 +110,33 @@ namespace DSTTMR
 
     void FakeCentralOdom::publishCentralOdomData()
     {
-        // compute central robot position
-        central_robot_pose_.position_x = (first_robot_pose_.position_x + second_robot_pose_.position_x) / 2.0;
-        central_robot_pose_.position_y = (first_robot_pose_.position_y + second_robot_pose_.position_y) / 2.0;
-        // compute central robot yaw: atan2(dy, dx)
-        float dx = first_robot_pose_.position_x - second_robot_pose_.position_x;
-        float dy = first_robot_pose_.position_y - second_robot_pose_.position_y;
-        central_robot_pose_.rotation_yaw = atan2(dy, dx);
-        // publish data
-        tf::Transform transform;
-        transform.setOrigin( tf::Vector3(central_robot_pose_.position_x, central_robot_pose_.position_y, 0.0) );
-        tf::Quaternion q;
-        q.setRPY(0, 0, central_robot_pose_.rotation_yaw);
-        transform.setRotation(q);
-        broadcaster_.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/map", fake_central_base_footprint_));
+        {
+            // compute central robot position
+            central_robot_pose_.position_x = (first_robot_pose_.position_x + second_robot_pose_.position_x) / 2.0;
+            central_robot_pose_.position_y = (first_robot_pose_.position_y + second_robot_pose_.position_y) / 2.0;
+            // compute central robot yaw: atan2(dy, dx)
+            float dx = first_robot_pose_.position_x - second_robot_pose_.position_x;
+            float dy = first_robot_pose_.position_y - second_robot_pose_.position_y;
+            central_robot_pose_.rotation_yaw = atan2(dy, dx);
+            // publish data
+            tf::Transform transform;
+            transform.setOrigin( tf::Vector3(central_robot_pose_.position_x, central_robot_pose_.position_y, 0.0) );
+            tf::Quaternion q;
+            q.setRPY(0, 0, central_robot_pose_.rotation_yaw);
+            transform.setRotation(q);
+            broadcaster_.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/map", fake_central_base_footprint_));
+        }
         // where is map->odom, odom->base_footprint?
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        {
+            // publish data
+            tf::Transform transform;
+            transform.setOrigin( tf::Vector3(odom_to_map_.position_x, odom_to_map_.position_y, 0.0) );
+            tf::Quaternion q;
+            q.setRPY(0, 0, odom_to_map_.rotation_yaw);
+            transform.setRotation(q);
+            broadcaster_.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "/map", fake_central_odom_));
+        }
     }
 
 } // namespace DSTTMR
