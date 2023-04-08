@@ -44,7 +44,7 @@ namespace DSTTMR
             struct Odometry
             {
                 float position_x, position_y, rotation_yaw;
-                RobotPose():position_x{0.0}, position_y{0.0}, rotation_yaw{0.0} {}
+                Odometry():position_x{0.0}, position_y{0.0}, rotation_yaw{0.0} {}
             }odom_to_map_;
             
             

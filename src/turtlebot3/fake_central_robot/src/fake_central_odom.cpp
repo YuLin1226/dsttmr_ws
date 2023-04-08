@@ -1,6 +1,9 @@
 #include "fake_central_odom.h"
 #include <cmath>
 #include <tf/tf.h>
+#include <eigen3/Eigen/Dense>
+
+using namespace Eigen;
 
 namespace DSTTMR
 {
@@ -120,7 +123,6 @@ namespace DSTTMR
             central_robot_pose_.rotation_yaw = atan2(dy, dx);
         }
         // map -> odom
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         {
             tf::Transform transform;
             transform.setOrigin( tf::Vector3(odom_to_map_.position_x, odom_to_map_.position_y, 0.0) );
@@ -131,23 +133,35 @@ namespace DSTTMR
         }
         // odom -> base_footprint
         {
+            /*
+            use eigen lib to compute odom->base_footprint:
+            T = | c -s tx | is map->odom
+                | s  c ty |
+                | 0  0  1 |
+            odom->base_footprint = inv(T) * map->base_footprint
+            */
+            MatrixXd T_odom2map(3, 3);
+            T_odom2map(0, 0) = cos(odom_to_map_.rotation_yaw);
+            T_odom2map(0, 1) = - sin(odom_to_map_.rotation_yaw);
+            T_odom2map(1, 0) = cos(odom_to_map_.rotation_yaw);
+            T_odom2map(1, 1) = sin(odom_to_map_.rotation_yaw);
+            T_odom2map(0, 2) = odom_to_map_.position_x;
+            T_odom2map(1, 2) = odom_to_map_.position_y;
+            T_odom2map(2, 2) = 1;
+            Vector3d V_basefootprint2map, V_basefootprint2odom;
+            V_basefootprint2map(0) = central_robot_pose_.position_x;
+            V_basefootprint2map(1) = central_robot_pose_.position_y;
+            V_basefootprint2map(2) = 1;
+            V_basefootprint2odom = T_odom2map.inverse() * V_basefootprint2map;
+
             tf::Transform transform;
-            transform.setOrigin( tf::Vector3(odom_to_map_.position_x, odom_to_map_.position_y, 0.0) );
+            transform.setOrigin( tf::Vector3(V_basefootprint2odom(0), V_basefootprint2odom(1), 0.0) );
             tf::Quaternion q;
-            q.setRPY(0, 0, odom_to_map_.rotation_yaw);
+            q.setRPY(0, 0, odom_to_map_.rotation_yaw - central_robot_pose_.rotation_yaw);
             transform.setRotation(q);
             broadcaster_.sendTransform(tf::StampedTransform(transform, ros::Time::now(), fake_central_odom_, fake_central_base_footprint_));
         }
-        /*
-        use eigen lib to compute odom->base_footprint:
-    
-        T = | c -s tx | is map->odom
-            | s  c ty |
-            | 0  0  1 |
-        
-        odom->base_footprint = inv(T) * map->base_footprint
-
-        */
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
 } // namespace DSTTMR
