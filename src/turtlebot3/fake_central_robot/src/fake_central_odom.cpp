@@ -62,7 +62,7 @@ namespace DSTTMR
             try
             {
                 {
-                    listener.lookupTransform(first_robot_odom_, "/map",  
+                    listener.lookupTransform("/map", first_robot_odom_, 
                                             ros::Time(0), transform);
                     odom_to_map_.position_x = transform.getOrigin().x();
                     odom_to_map_.position_y = transform.getOrigin().y();
@@ -70,7 +70,7 @@ namespace DSTTMR
                     odom_to_map_.rotation_yaw = tf::getYaw(q);
                 }
                 {
-                    listener.lookupTransform(first_base_footprint_, "/map",  
+                    listener.lookupTransform("/map", first_base_footprint_, 
                                             ros::Time(0), transform);
                     first_robot_pose_.position_x = transform.getOrigin().x();
                     first_robot_pose_.position_y = transform.getOrigin().y();
@@ -95,7 +95,7 @@ namespace DSTTMR
         {
             try
             {
-                listener.lookupTransform(second_base_footprint_, "/map",  
+                listener.lookupTransform("/map", second_base_footprint_,
                                         ros::Time(0), transform);
                 second_robot_pose_.position_x = transform.getOrigin().x();
                 second_robot_pose_.position_y = transform.getOrigin().y();
@@ -118,8 +118,9 @@ namespace DSTTMR
             central_robot_pose_.position_x = (first_robot_pose_.position_x + second_robot_pose_.position_x) / 2.0;
             central_robot_pose_.position_y = (first_robot_pose_.position_y + second_robot_pose_.position_y) / 2.0;
             // compute central robot yaw: atan2(dy, dx)
-            float dx = first_robot_pose_.position_x - second_robot_pose_.position_x;
-            float dy = first_robot_pose_.position_y - second_robot_pose_.position_y;
+            // if we want tf's direction start from 1st, use "2nd - 1st".
+            float dx = second_robot_pose_.position_x - first_robot_pose_.position_x;
+            float dy = second_robot_pose_.position_y - first_robot_pose_.position_y;
             central_robot_pose_.rotation_yaw = atan2(dy, dx);
         }
         // map -> odom
@@ -143,11 +144,14 @@ namespace DSTTMR
             MatrixXd T_odom2map(3, 3);
             T_odom2map(0, 0) = cos(odom_to_map_.rotation_yaw);
             T_odom2map(0, 1) = - sin(odom_to_map_.rotation_yaw);
-            T_odom2map(1, 0) = cos(odom_to_map_.rotation_yaw);
-            T_odom2map(1, 1) = sin(odom_to_map_.rotation_yaw);
+            T_odom2map(1, 0) = sin(odom_to_map_.rotation_yaw);
+            T_odom2map(1, 1) = cos(odom_to_map_.rotation_yaw);
             T_odom2map(0, 2) = odom_to_map_.position_x;
             T_odom2map(1, 2) = odom_to_map_.position_y;
+            T_odom2map(2, 0) = 0;
+            T_odom2map(2, 1) = 0;
             T_odom2map(2, 2) = 1;
+
             Vector3d V_basefootprint2map, V_basefootprint2odom;
             V_basefootprint2map(0) = central_robot_pose_.position_x;
             V_basefootprint2map(1) = central_robot_pose_.position_y;
