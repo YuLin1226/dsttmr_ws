@@ -1,42 +1,12 @@
 <launch>
-  <arg name="base_type" default="DSR" doc="base type [DSR,AFL]"/>
-
   <arg name="open_rviz" default="false" />
-
-  <arg name="no_static_map" default="false"/>
-  <arg name="map_yaml_file" default="$(find usun_slam)/maps/blank_map.yaml" if="$(arg no_static_map)"/>
-
-
-  <arg  name="map_yaml_file" default="$(find usun_slam)/maps/USD_2F.yaml" unless="$(arg no_static_map)" />
-  <arg name="map_pbstream_file" default="$(find usun_slam)/maps/USD_2F.pbstream" />
-
-  <!-- <arg name="map_yaml_file" default="$(find usun_slam)/maps/warehouse_word.yaml" />
-  <arg name="map_pbstream_file" default="$(find usun_slam)/maps/warehouse_word.pbstream" /> -->
-
-  
-  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_yaml_file)" />
 
   <!-- set topics -->
   <arg name="scan_1_topic" default="/r2000_node/scan" />
   <arg name="odom_topic" default="/odom_combined" />
   <arg name="imu_topic" default="/imu/data" />
 
-  <!-- usun localization_config -->
-  <arg name="usun_localization_launch" default="$(find usun_slam)/launch/usun_localization.launch" />
-  <include unless="$(arg no_static_map)" file="$(arg usun_localization_launch)">
-    <arg name="base_type" value="$(arg base_type)" />
-    <arg name="scan_1_topic" value="$(arg scan_1_topic)" />
-    <arg name="odom_topic" value="$(arg odom_topic)" />
-    <arg name="imu_topic" value="$(arg imu_topic)" />
-    <arg name="map_pbstream_file" value="$(arg map_pbstream_file)" />
-  </include>
-
-  <!-- move the robot -->
-  <arg name="way_points_navigation" default="false" />
-  <arg name="enable_safe_zone" default="false" />
-  <arg name="use_keepout" default="false" />
   <!-- set topics -->
-  <arg name="map_topic" default="map" />
   <arg name="navigation_cmd_topic" default="/navigation/cmd_vel" />
   <!-- set frame_id -->
   <arg name="global_frame_id" default="map" />
@@ -44,31 +14,21 @@
   <arg name="base_frame_id" default="base_footprint" />
 
   <!-- Navigation parameter files -->
-  <arg name="move_base_include" default="$(dirname)/../launch/include/move_base.launch.xml" />
-  <arg name="custom_param_file" default="$(dirname)/../config/dummy.yaml" />
+  <arg name="move_base_include" default="$(dirname)/../launch/include/move_base.launch" />
 
   <include file="$(arg move_base_include)">
-    <arg name="custom_param_file" value="$(arg custom_param_file)" />
 
     <arg name="no_static_map" value="$(arg no_static_map)" />
     <arg name="way_points_navigation" value="$(arg way_points_navigation)" />
-    <arg name="enable_safe_zone" value="$(arg enable_safe_zone)" />
-
-    <arg name="name" value="$(arg base_type)" />
 
     <arg name="global_frame_id" value="$(arg global_frame_id)" />
     <arg name="odom_frame_id" value="$(arg odom_frame_id)" />
     <arg name="base_frame_id" value="$(arg base_frame_id)" />
-
-    <arg if="$(arg use_keepout)" name="map_topic" value="map_keepout" />
-    <arg unless="$(arg use_keepout)" name="map_topic" value="$(arg map_topic)" />
 
     <arg name="odom_topic" value="$(arg odom_topic)" />
     <arg name="cmd_vel_topic" value="$(arg navigation_cmd_topic)" />
   </include>
 
   <node if="$(arg open_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(dirname)/../rviz/$(arg base_type)_nav.rviz" output="screen" />
-
-
 
 </launch>
