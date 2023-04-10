@@ -40,3 +40,10 @@ namespace DSTTMR
 
 
 } // namespace DSTTMR
+
+int main(int argc, char** argv)
+{
+    ros::init(argc, argv, "multirobot_cmd_vel_calculator");
+    ros::NodeHandle nh, private_nh("~");
+    return 0;
+};

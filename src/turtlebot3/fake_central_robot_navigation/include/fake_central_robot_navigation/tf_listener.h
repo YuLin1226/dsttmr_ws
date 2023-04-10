@@ -14,8 +14,8 @@ namespace DSTTMR
             double getDistanceBetweenTwoRobots();
         private:
             void echoRobotTF();
-            voide updateRobotDistance();
-            std::string first_robot_basefootprint_name, second_robot_basefootprint_name;
+            void updateRobotDistance();
+            std::string first_robot_basefootprint_name_, second_robot_basefootprint_name_;
             double robot_distance_;
             struct RobotPose
             {
