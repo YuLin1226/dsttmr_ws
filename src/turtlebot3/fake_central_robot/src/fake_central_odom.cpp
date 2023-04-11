@@ -14,7 +14,7 @@ namespace DSTTMR
     , first_base_footprint_("/first_robot_base_footprint")
     , second_base_footprint_("/second_robot_base_footprint")
     , first_robot_odom_("/first_robot_odom")
-    , fake_central_odom_("/odom")
+    , fake_central_odom_("/fake_central_odom")
     {
         // retrive ros setting & parameters
         odom_pub_ = private_nh_.advertise<nav_msgs::Odometry>("/fake_central_odom", 50);
@@ -188,7 +188,7 @@ namespace DSTTMR
             //publish the message
             odom_pub_.publish(odom);
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME_IN_MS));
     }
 
 } // namespace DSTTMR

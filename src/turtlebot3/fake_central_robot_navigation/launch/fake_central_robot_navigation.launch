@@ -2,24 +2,22 @@
   <arg name="open_rviz" default="false" />
 
   <!-- set topics -->
-  <arg name="scan_1_topic" default="/r2000_node/scan" />
-  <arg name="odom_topic" default="/odom_combined" />
-  <arg name="imu_topic" default="/imu/data" />
+  <arg name="odom_topic" default="/fake_central_odom" />
 
   <!-- set topics -->
   <arg name="navigation_cmd_topic" default="/navigation/cmd_vel" />
   <!-- set frame_id -->
   <arg name="global_frame_id" default="map" />
-  <arg name="odom_frame_id" default="odom" />
-  <arg name="base_frame_id" default="base_footprint" />
+  <arg name="odom_frame_id" default="fake_central_odom" />
+  <arg name="base_frame_id" default="fake_central_base_footprint" />
 
   <!-- Navigation parameter files -->
   <arg name="move_base_include" default="$(dirname)/../launch/include/move_base.launch" />
 
   <include file="$(arg move_base_include)">
 
-    <arg name="no_static_map" value="$(arg no_static_map)" />
-    <arg name="way_points_navigation" value="$(arg way_points_navigation)" />
+    <!-- <arg name="no_static_map" value="$(arg no_static_map)" /> -->
+    <!-- <arg name="way_points_navigation" value="$(arg way_points_navigation)" /> -->
 
     <arg name="global_frame_id" value="$(arg global_frame_id)" />
     <arg name="odom_frame_id" value="$(arg odom_frame_id)" />

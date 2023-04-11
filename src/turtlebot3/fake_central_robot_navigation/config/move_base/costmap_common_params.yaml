@@ -12,20 +12,21 @@ obstacle_layer:
   mark_threshold:       0
   publish_voxel_map: false
   observation_sources: scan # point_cloud_sensor # scan_cloud rear_scan
-  scan_cloud:
-    sensor_frame: base_link
-    data_type: PointCloud2
-    topic: /scan_cloud  
-    expected_update_rate: 0.5  # 0.5
-    marking: true
-    clearing: true
-    min_obstacle_height: 0.01    #  0.25 turtlebot_apps, -2.0 jackak
-    max_obstacle_height: 2      #  0.35 turtlebot_apps,  2.0 jackak 
-    obstacle_range: 2.5    #  2.5 turtlebot_apps,    
-    raytrace_range: 3.0    #  3.0 turtlebot_apps,
+  # scan_cloud:
+  #   sensor_frame: base_link
+  #   data_type: PointCloud2
+  #   topic: /scan_cloud  
+  #   expected_update_rate: 0.5  # 0.5
+  #   marking: true
+  #   clearing: true
+  #   min_obstacle_height: 0.01    #  0.25 turtlebot_apps, -2.0 jackak
+  #   max_obstacle_height: 2      #  0.35 turtlebot_apps,  2.0 jackak 
+  #   obstacle_range: 2.5    #  2.5 turtlebot_apps,    
+  #   raytrace_range: 3.0    #  3.0 turtlebot_apps,
   scan:
+    sensor_frame: first_robot_base_scan
     data_type: LaserScan
-    topic: /scan_filtered
+    topic: /first_robot/scan
     marking: true
     clearing: true
     obstacle_range: 2.5  #  2.5 turtlebot_apps,
@@ -34,24 +35,24 @@ obstacle_layer:
     max_obstacle_height: 1.5
   rear_scan:
     data_type: LaserScan
-    topic: /rear_right_laser/scan 
+    topic: /second_robot/scan 
     marking: true
     clearing: true
     obstacle_range: 3.0  
     raytrace_range: 3.5 
     min_obstacle_height: 0.05
     max_obstacle_height: 1.5
-  point_cloud_sensor:
-    sensor_frame: base_link
-    data_type: PointCloud2
-    topic: /camera/obstacles_cloud  
-    expected_update_rate: 2.5  # 0.5
-    marking: true
-    clearing: true
-    max_obstacle_height: 2      #  0.35 turtlebot_apps,  2.0 jackak 
-    min_obstacle_height: 0.1    #  0.25 turtlebot_apps, -2.0 jackak
-    obstacle_range: 3.0    #  2.5 turtlebot_apps,    
-    raytrace_range: 3.5    #  3.0 turtlebot_apps,
+  # point_cloud_sensor:
+  #   sensor_frame: base_link
+  #   data_type: PointCloud2
+  #   topic: /camera/obstacles_cloud  
+  #   expected_update_rate: 2.5  # 0.5
+  #   marking: true
+  #   clearing: true
+  #   max_obstacle_height: 2      #  0.35 turtlebot_apps,  2.0 jackak 
+  #   min_obstacle_height: 0.1    #  0.25 turtlebot_apps, -2.0 jackak
+  #   obstacle_range: 3.0    #  2.5 turtlebot_apps,    
+  #   raytrace_range: 3.5    #  3.0 turtlebot_apps,
 
 
 inflation_layer:
