@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   tf
+  nav_msgs
 )
 
 catkin_package(
@@ -19,7 +20,9 @@ catkin_package(
     ${PROJECT_NAME}
   CATKIN_DEPENDS
     roscpp
+    rospy
     tf
+    nav_msgs
 )
 
 # include_directories(

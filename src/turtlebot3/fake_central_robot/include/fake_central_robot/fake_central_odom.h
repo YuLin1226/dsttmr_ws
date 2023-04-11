@@ -29,6 +29,7 @@ namespace DSTTMR
         private:
             static inline const uint8_t SLEEP_TIME_IN_MS = 10;
             ros::NodeHandle private_nh_;
+            ros::Publisher odom_pub_;
             // tf::TransformListener first_odom_listener_, second_odom_listener_;
             tf::TransformBroadcaster broadcaster_;
             std::thread first_thread_, second_thread_;

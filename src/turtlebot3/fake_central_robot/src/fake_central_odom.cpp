@@ -2,6 +2,7 @@
 #include <cmath>
 #include <tf/tf.h>
 #include <eigen3/Eigen/Dense>
+#include <nav_msgs/Odometry.h>
 
 using namespace Eigen;
 
@@ -16,6 +17,7 @@ namespace DSTTMR
     , fake_central_odom_("/odom")
     {
         // retrive ros setting & parameters
+        odom_pub_ = private_nh_.advertise<nav_msgs::Odometry>("/fake_central_odom", 50);
     }
 
     FakeCentralOdom::~FakeCentralOdom()
@@ -164,6 +166,27 @@ namespace DSTTMR
             q.setRPY(0, 0, odom_to_map_.rotation_yaw - central_robot_pose_.rotation_yaw);
             transform.setRotation(q);
             broadcaster_.sendTransform(tf::StampedTransform(transform, ros::Time::now(), fake_central_odom_, fake_central_base_footprint_));
+        
+            // publish odom to topic
+            nav_msgs::Odometry odom;
+            odom.header.stamp = ros::Time::now();
+            odom.header.frame_id = "odom";
+
+            //set the position
+            odom.pose.pose.position.x = V_basefootprint2odom(0);
+            odom.pose.pose.position.y = V_basefootprint2odom(1);
+            odom.pose.pose.position.z = 0.0;
+            geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(odom_to_map_.rotation_yaw - central_robot_pose_.rotation_yaw);
+            odom.pose.pose.orientation = odom_quat;
+
+            //set the velocity
+            odom.child_frame_id = "fake_central_base_footprint";
+            // odom.twist.twist.linear.x = 0.0;
+            // odom.twist.twist.linear.y = ;
+            // odom.twist.twist.angular.z = vth;
+
+            //publish the message
+            odom_pub_.publish(odom);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
