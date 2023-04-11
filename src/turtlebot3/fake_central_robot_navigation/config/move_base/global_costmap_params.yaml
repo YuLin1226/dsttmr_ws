@@ -6,7 +6,7 @@ resolution: 0.02
 transform_tolerance: 0.5
 plugins:
   - { name: static_layer, type: "costmap_2d::StaticLayer" }
-  - { name: obstacle_layer, type: "costmap_2d::ObstacleLayer" }  # VoxelLayer
+  # - { name: obstacle_layer, type: "costmap_2d::ObstacleLayer" }  # VoxelLayer
   - { name: inflation_layer, type: "costmap_2d::InflationLayer" }
 #  - { name: obstacle_layer, type: "costmap_2d::ObstacleLayer" }  # VoxelLayer
 #  - { name: inflation_layer, type: "costmap_2d::InflationLayer" }

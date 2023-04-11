@@ -11,5 +11,5 @@ footprint_clearing_enabled: true
 # cost_scaling_factor: 2.58 
 
 plugins:
-   - {name: obstacle_layer,      type: "costmap_2d::ObstacleLayer"}   # ObstacleLayer VoxelLayer
+   # - {name: obstacle_layer,      type: "costmap_2d::ObstacleLayer"}   # ObstacleLayer VoxelLayer
    - {name: inflation_layer,     type: "costmap_2d::InflationLayer"}
