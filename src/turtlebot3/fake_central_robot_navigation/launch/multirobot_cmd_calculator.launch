@@ -1,0 +1,13 @@
+<launch>
+    
+    <arg name="fake_central_cmd_vel_topic" default="/cmd_vel"/>
+    <arg name="first_robot_cmd_vel_topic" default="/first_robot_cmd_vel"/>
+    <arg name="second_robot_cmd_vel_topic" default="/second_robot_cmd_vel"/>
+
+    <node pkg="fake_central_robot_navigation" type="multirobot_cmd_vel_calculator" name="multirobot_cmd_vel_calculator_node" output="screen">
+        <remap from="/cmd_vel" to="$(arg fake_central_cmd_vel_topic)"/>
+        <remap from="/first_robot_cmd_vel" to="$(arg first_robot_cmd_vel_topic)"/>
+        <remap from="/second_robot_cmd_vel" to="$(arg second_robot_cmd_vel_topic)"/>
+    </node>
+
+</launch>
