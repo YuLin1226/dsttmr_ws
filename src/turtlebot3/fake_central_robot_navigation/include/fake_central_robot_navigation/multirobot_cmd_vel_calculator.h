@@ -20,7 +20,7 @@ namespace DSTTMR
             ros::Publisher first_robot_cmd_vel_pub_, second_robot_cmd_vel_pub_;
             ros::NodeHandle private_nh_;
             void multiRobotCommandVelocityCalculateCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel);
-            void publishTwoRobotsCommandVelocity(double& robot_distance);
+            void publishTwoRobotsCommandVelocity(const double& robot_distance, const double& vx, const double& vy, const double& w);
 
     };
 
