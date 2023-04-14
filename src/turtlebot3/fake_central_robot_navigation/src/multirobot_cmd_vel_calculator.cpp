@@ -1,4 +1,5 @@
 #include "multirobot_cmd_vel_calculator.h"
+#include <cmath>
 
 namespace DSTTMR
 {
@@ -6,7 +7,8 @@ namespace DSTTMR
     : private_nh_(private_nh)
     {
 
-        tf_listener_ = std::make_shared<TF_LISTENER>();
+        first_robot_tf_listener_ = std::make_shared<TF_LISTENER>("/map", "/first_robot_base_footprint");
+        second_robot_tf_listener_ = std::make_shared<TF_LISTENER>("/map", "/second_robot_base_footprint");
 
         first_robot_cmd_vel_pub_ = private_nh_.advertise<geometry_msgs::Twist>("/first_robot_cmd_vel", 1000);
         second_robot_cmd_vel_pub_ = private_nh_.advertise<geometry_msgs::Twist>("/second_robot_cmd_vel", 1000);
@@ -14,19 +16,26 @@ namespace DSTTMR
         cmd_vel_sub_ = private_nh_.subscribe(
             "/cmd_vel", 
             1000, 
-            &MultiRobot_CommandVelcity_Calculator::multiRobotCommandVelocityCalculateCallback, 
+            &MultiRobot_CommandVelcity_Calculator::centralRobotCommandVelocityCallback, 
             this);
     }
 
-    MultiRobot_CommandVelcity_Calculator::~MultiRobot_CommandVelcity_Calculator()
+    double MultiRobot_CommandVelcity_Calculator::getRobotDistance()
     {
-
+        double dist(0.0);
+        double first_robot_position_x, first_robot_position_y, first_robot_rotation_yaw;
+        double second_robot_position_x, second_robot_position_y, second_robot_rotation_yaw;
+        first_robot_tf_listener_->updateRobotPose(first_robot_position_x, first_robot_position_y, first_robot_rotation_yaw);
+        second_robot_tf_listener_->updateRobotPose(second_robot_position_x, second_robot_position_y, second_robot_rotation_yaw);
+        double dx = first_robot_position_x - second_robot_position_x;
+        double dy = first_robot_position_y - second_robot_position_y;
+        dist = sqrt(dx*dx + dy*dy);
+        return dist;
     }
 
-    void MultiRobot_CommandVelcity_Calculator::multiRobotCommandVelocityCalculateCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel)
+    void MultiRobot_CommandVelcity_Calculator::centralRobotCommandVelocityCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel)
     {
-        auto dist = tf_listener_->getDistanceBetweenTwoRobots();
-        publishTwoRobotsCommandVelocity(dist, cmd_vel->linear.x, cmd_vel->linear.y, cmd_vel->angular.z);
+        publishTwoRobotsCommandVelocity(getRobotDistance(), cmd_vel->linear.x, cmd_vel->linear.y, cmd_vel->angular.z);
     }
 
     void MultiRobot_CommandVelcity_Calculator::publishTwoRobotsCommandVelocity(const double& robot_distance, const double& vx, const double& vy, const double& w)
@@ -44,7 +53,7 @@ namespace DSTTMR
             // publish cmd_vel of the 2nd robot
             {
                 geometry_msgs::Twist second_robot_cmd_vel;
-        }
+            }
         }
     }
 

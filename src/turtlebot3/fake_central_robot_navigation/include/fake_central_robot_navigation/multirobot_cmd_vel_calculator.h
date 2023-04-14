@@ -12,14 +12,18 @@ namespace DSTTMR
     {
         public:
             MultiRobot_CommandVelcity_Calculator(ros::NodeHandle private_nh);
-            ~MultiRobot_CommandVelcity_Calculator();
+            ~MultiRobot_CommandVelcity_Calculator(){}
 
         private:
-            std::shared_ptr<TF_LISTENER> tf_listener_;
-            ros::Subscriber cmd_vel_sub_;
-            ros::Publisher first_robot_cmd_vel_pub_, second_robot_cmd_vel_pub_;
             ros::NodeHandle private_nh_;
-            void multiRobotCommandVelocityCalculateCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel);
+            std::shared_ptr<TF_LISTENER> first_robot_tf_listener_;
+            std::shared_ptr<TF_LISTENER> second_robot_tf_listener_;
+            ros::Subscriber cmd_vel_sub_;
+            ros::Publisher first_robot_cmd_vel_pub_;
+            ros::Publisher second_robot_cmd_vel_pub_;
+
+            void centralRobotCommandVelocityCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel);
+            double getRobotDistance();
             void publishTwoRobotsCommandVelocity(const double& robot_distance, const double& vx, const double& vy, const double& w);
 
     };

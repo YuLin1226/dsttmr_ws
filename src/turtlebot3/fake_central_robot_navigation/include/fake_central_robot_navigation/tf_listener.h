@@ -9,19 +9,13 @@ namespace DSTTMR
     class TF_LISTENER
     {
         public:
-            TF_LISTENER();
-            ~TF_LISTENER();
-            double getDistanceBetweenTwoRobots();
+            TF_LISTENER(std::string parent_frame_name, std::string child_frame_name);
+            ~TF_LISTENER() {}
+            void updateRobotPose(double& robot_position_x, double& robot_position_y, double& rotation_yaw);
         private:
             void echoRobotTF();
-            void updateRobotDistance();
-            std::string first_robot_basefootprint_name_, second_robot_basefootprint_name_;
-            double robot_distance_;
-            struct RobotPose
-            {
-                float position_x, position_y, rotation_yaw;
-                RobotPose():position_x(0.0), position_y(0.0), rotation_yaw(0.0) {}
-            }first_robot_pose_, second_robot_pose_;
+            std::string parent_frame_name_, child_frame_name_;
+            double position_x_, position_y_, rotation_yaw_;
     };
 }
 
