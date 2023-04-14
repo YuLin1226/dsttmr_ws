@@ -1,0 +1,55 @@
+<launch>
+
+  <arg name="name" />
+
+  <arg name="no_static_map" default="false"/>
+  <arg name="way_points_navigation" default="false"/>
+
+  <!-- set frame_id -->
+  <arg name="global_frame_id" default="map"/>
+  <arg name="odom_frame_id" default="odom"/>
+  <arg name="base_frame_id" default="base_link"/>
+
+  <!-- set topics -->
+  <arg name="map_topic" default="/map" />
+  <arg name="odom_topic" default="odom" />
+  <arg name="cmd_vel_topic" default="cmd_vel" />
+
+  <!-- planners, costmaps, etc -->
+  <node pkg="move_base" type="move_base" name="move_base" respawn="true" output="screen" clear_params="true">
+    <rosparam file="$(dirname)/../../config/move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
+
+    <rosparam file="$(dirname)/../../config/move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
+
+    <rosparam file="$(dirname)/../../config/move_base/local_costmap_params.yaml" command="load" ns="local_costmap" />
+
+    <rosparam file="$(dirname)/../../config/move_base/global_costmap_params.yaml" command="load" ns="global_costmap" />
+
+    <rosparam file="$(dirname)/../../config/move_base/planners.yaml" command="load" />
+
+    <rosparam file="$(dirname)/../../config/move_base/controllers.yaml" command="load" />
+
+    <rosparam file="$(dirname)/../../config/move_base/recovery_behaviors.yaml" command="load" />
+
+    <!-- reset frame_id parameters using user input data -->
+    <param name="global_costmap/global_frame" value="$(arg global_frame_id)" unless="$(arg no_static_map)" />
+    <param name="global_costmap/global_frame" value="$(arg odom_frame_id)" if="$(arg no_static_map)" />
+    <param name="global_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+    <param name="global_costmap/width" value="100.0" if="$(arg no_static_map)"/>
+    <param name="global_costmap/height" value="100.0" if="$(arg no_static_map)"/>
+    <param name="global_costmap/static_layer/map_topic" value="$(arg map_topic)" unless="$(arg way_points_navigation)"/>
+    <param name="global_costmap/static_layer/map_topic" value="/modified_map" if="$(arg way_points_navigation)"/>
+
+    <param name="local_costmap/global_frame" value="$(arg odom_frame_id)"/>
+    <param name="local_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+
+    <param name="TebLocalPlannerROS/odom_topic" value="$(arg odom_topic)"/>
+    <param name="TebLocalPlannerROS/map_frame" value="$(arg odom_frame_id)"/>
+
+    <remap from="map" to="$(arg map_topic)" />
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+
+  </node>
+
+</launch>
