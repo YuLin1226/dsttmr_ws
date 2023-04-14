@@ -1,28 +1,25 @@
 #include "tf_listener.h"
 #include <tf/transform_listener.h>
 #include <tf/tf.h>
-#include <cmath>
 
 namespace DSTTMR
 {
-    TF_LISTENER::TF_LISTENER()
-    : robot_distance_(0.0)
-    , first_robot_basefootprint_name_("/first_robot_base_footprint")
-    , second_robot_basefootprint_name_("/second_robot_base_footprint")
+    TF_LISTENER::TF_LISTENER(std::string parent_frame_name, std::string child_frame_name)
+    : parent_frame_name_(parent_frame_name)
+    , child_frame_name_(child_frame_name)
+    , position_x_(0.0)
+    , position_y_(0.0)
+    , rotation_yaw_(0.0)
     {
     }
 
-    TF_LISTENER::~TF_LISTENER()
-    {
-    }
-
-    double TF_LISTENER::getDistanceBetweenTwoRobots()
+    void TF_LISTENER::updateRobotPose(double& robot_position_x, double& robot_position_y, double& rotation_yaw)
     {
         echoRobotTF();
-        updateRobotDistance();
-        return robot_distance_;
+        robot_position_x = position_x_;
+        robot_position_y = position_y_;
+        rotation_yaw = rotation_yaw_;
     }
-
     void TF_LISTENER::echoRobotTF()
     {
         tf::StampedTransform transform;
@@ -30,20 +27,12 @@ namespace DSTTMR
         try
         {
             {
-                listener.lookupTransform("/map", first_robot_basefootprint_name_, 
+                listener.lookupTransform(parent_frame_name_, child_frame_name_, 
                                         ros::Time(0), transform);
-                first_robot_pose_.position_x = transform.getOrigin().x();
-                first_robot_pose_.position_y = transform.getOrigin().y();
+                position_x_ = transform.getOrigin().x();
+                position_y_ = transform.getOrigin().y();
                 tf::Quaternion q = transform.getRotation(); 
-                first_robot_pose_.rotation_yaw = tf::getYaw(q);
-            }
-            {
-                listener.lookupTransform("/map", second_robot_basefootprint_name_, 
-                                        ros::Time(0), transform);
-                second_robot_pose_.position_x = transform.getOrigin().x();
-                second_robot_pose_.position_y = transform.getOrigin().y();
-                tf::Quaternion q = transform.getRotation(); 
-                second_robot_pose_.rotation_yaw = tf::getYaw(q);
+                rotation_yaw_ = tf::getYaw(q);
             }
         }
         catch (tf::TransformException ex)
@@ -53,11 +42,5 @@ namespace DSTTMR
         }
     }
 
-    void TF_LISTENER::updateRobotDistance()
-    {
-        double dx = first_robot_pose_.position_x - second_robot_pose_.position_y;
-        double dy = first_robot_pose_.position_y - second_robot_pose_.position_y;
-        robot_distance_ = sqrt(dx*dx + dy*dy);
-    }
     
 } // namespace DSTTMR
