@@ -10,8 +10,8 @@ namespace DSTTMR
         first_robot_tf_listener_ = std::make_shared<TF_LISTENER>("/map", "/first_robot_base_footprint");
         second_robot_tf_listener_ = std::make_shared<TF_LISTENER>("/map", "/second_robot_base_footprint");
 
-        first_robot_cmd_vel_pub_ = private_nh_.advertise<geometry_msgs::Twist>("/first_robot_cmd_vel", 1000);
-        second_robot_cmd_vel_pub_ = private_nh_.advertise<geometry_msgs::Twist>("/second_robot_cmd_vel", 1000);
+        first_robot_cmd_calculator_ = std::make_shared<SingleRobotCommandVelocityCalculator>(private_nh, "/first_robot_cmd_vel");
+        second_robot_cmd_calculator_ = std::make_shared<SingleRobotCommandVelocityCalculator>(private_nh, "/second_robot_cmd_vel");
 
         cmd_vel_sub_ = private_nh_.subscribe(
             "/cmd_vel", 
@@ -35,26 +35,20 @@ namespace DSTTMR
 
     void MultiRobot_CommandVelcity_Calculator::centralRobotCommandVelocityCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel)
     {
-        publishTwoRobotsCommandVelocity(getRobotDistance(), cmd_vel->linear.x, cmd_vel->linear.y, cmd_vel->angular.z);
+        auto robot_dist = getRobotDistance();
+        publishTwoRobotsCommandVelocity(robot_dist, cmd_vel->linear.x, cmd_vel->linear.y, cmd_vel->angular.z);
     }
 
     void MultiRobot_CommandVelcity_Calculator::publishTwoRobotsCommandVelocity(const double& robot_distance, const double& vx, const double& vy, const double& w)
     {
         // Use dual-steering-robot model to calculate 1st & 2nd robots' cmd_vel
-        {
-            double v1x = vx;
-            double v1y = vy + w*robot_distance/2;
-            double v2x = vx;
-            double v2y = vy - w*robot_distance/2;
-            // publish cmd_vel of the 1st robot
-            {
-                geometry_msgs::Twist first_robot_cmd_vel;
-            }
-            // publish cmd_vel of the 2nd robot
-            {
-                geometry_msgs::Twist second_robot_cmd_vel;
-            }
-        }
+        double v1x = vx;
+        double v1y = vy + w*robot_distance/2;
+        double v2x = vx;
+        double v2y = vy - w*robot_distance/2;
+
+        first_robot_cmd_calculator_->publishCommandVelocity(v1x, v1y);
+        second_robot_cmd_calculator_->publishCommandVelocity(v2x, v2y);
     }
 
 

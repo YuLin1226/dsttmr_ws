@@ -5,6 +5,7 @@
 #include <memory>
 #include "tf_listener.h"
 #include <geometry_msgs/Twist.h>
+#include "single_robot_cmd_vel_calculator.h"
 
 namespace DSTTMR
 {
@@ -18,9 +19,9 @@ namespace DSTTMR
             ros::NodeHandle private_nh_;
             std::shared_ptr<TF_LISTENER> first_robot_tf_listener_;
             std::shared_ptr<TF_LISTENER> second_robot_tf_listener_;
+            std::shared_ptr<SingleRobotCommandVelocityCalculator> first_robot_cmd_calculator_;
+            std::shared_ptr<SingleRobotCommandVelocityCalculator> second_robot_cmd_calculator_;
             ros::Subscriber cmd_vel_sub_;
-            ros::Publisher first_robot_cmd_vel_pub_;
-            ros::Publisher second_robot_cmd_vel_pub_;
 
             void centralRobotCommandVelocityCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel);
             double getRobotDistance();
