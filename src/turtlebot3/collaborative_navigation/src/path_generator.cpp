@@ -45,44 +45,49 @@ namespace DSTTMR
         return true;
     }
 
-    std::vector<geometry_msgs::PoseStamped> PathGenerator::createNormalWorkTurnRightPath(const nav_msgs::Path& waypoints, double radius, int num_points)
+    std::vector<geometry_msgs::PoseStamped> PathGenerator::createCirclePath(const double& radius = 1, const int& int_points = 10)
     {
-        // number of received waypoints: 1 or 2
-        // >>> use first waypoint to design pattern, and connect pattern points to second waypoint.
 
-        // Pattern design
-        double useless_roll, useless_pitch;
-        std::vector<geometry_msgs::PoseStamped> pattern_points;
-        for(float i=0; i<=num_points; i++)
-        {
-            geometry_msgs::PoseStamped point;
-            point.header = waypoints.poses.front().header;
-            point.pose.position.x = radius*cos(M_PI - i/num_points*M_PI/2.0);
-            point.pose.position.y = radius*sin(M_PI - i/num_points*M_PI/2.0) - radius;
-            double yaw_inRad = (M_PI/2 - i/num_points*M_PI/2);
-            point.pose.orientation = tf::createQuaternionMsgFromYaw(yaw_inRad);
-            pattern_points.push_back(point);
-        }
-        double dyaw_inRad;
-        MathTools::MathTool::transformQuaternionToEuler(waypoints.poses.front().pose.orientation, 
-                                useless_roll,
-                                useless_pitch,
-                                dyaw_inRad);
-        transformPatternPoints(waypoints.poses.front().pose.position.x,
-                            waypoints.poses.front().pose.position.y,
-                            dyaw_inRad,
-                            pattern_points);
-        
-        if(waypoints.poses.size()>1)
-        {
-            for(auto i=1; i<waypoints.poses.size(); i++)
-            {
-                pattern_points.emplace_back(waypoints.poses[i]);
-            }
-        }
-
-        return pattern_points;
     }
+
+    // std::vector<geometry_msgs::PoseStamped> PathGenerator::createNormalWorkTurnRightPath(const nav_msgs::Path& waypoints, double radius, int num_points)
+    // {
+    //     // number of received waypoints: 1 or 2
+    //     // >>> use first waypoint to design pattern, and connect pattern points to second waypoint.
+
+    //     // Pattern design
+    //     double useless_roll, useless_pitch;
+    //     std::vector<geometry_msgs::PoseStamped> pattern_points;
+    //     for(float i=0; i<=num_points; i++)
+    //     {
+    //         geometry_msgs::PoseStamped point;
+    //         point.header = waypoints.poses.front().header;
+    //         point.pose.position.x = radius*cos(M_PI - i/num_points*M_PI/2.0);
+    //         point.pose.position.y = radius*sin(M_PI - i/num_points*M_PI/2.0) - radius;
+    //         double yaw_inRad = (M_PI/2 - i/num_points*M_PI/2);
+    //         point.pose.orientation = tf::createQuaternionMsgFromYaw(yaw_inRad);
+    //         pattern_points.push_back(point);
+    //     }
+    //     double dyaw_inRad;
+    //     MathTools::MathTool::transformQuaternionToEuler(waypoints.poses.front().pose.orientation, 
+    //                             useless_roll,
+    //                             useless_pitch,
+    //                             dyaw_inRad);
+    //     transformPatternPoints(waypoints.poses.front().pose.position.x,
+    //                         waypoints.poses.front().pose.position.y,
+    //                         dyaw_inRad,
+    //                         pattern_points);
+        
+    //     if(waypoints.poses.size()>1)
+    //     {
+    //         for(auto i=1; i<waypoints.poses.size(); i++)
+    //         {
+    //             pattern_points.emplace_back(waypoints.poses[i]);
+    //         }
+    //     }
+
+    //     return pattern_points;
+    // }
 
     void PathGenerator::transformPatternPoints(const double& dx, const double& dy, const double& dyaw_inRad, std::vector<geometry_msgs::PoseStamped>& points)
     {

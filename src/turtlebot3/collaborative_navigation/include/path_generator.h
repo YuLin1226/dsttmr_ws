@@ -18,7 +18,7 @@ namespace DSTTMR
             void operator=(PathGenerator const&) =delete;
             bool prunePatternPath(std::vector<geometry_msgs::PoseStamped>& pattern_points_in_global, const double& robot_pose_x, const double& robot_pose_y, double prune_threshold=0.03);
             // customized pattern path
-            std::vector<geometry_msgs::PoseStamped> createNormalWorkTurnRightPath(              const nav_msgs::Path& waypoints, double radius=2.0, int num_points=10);
+            std::vector<geometry_msgs::PoseStamped> createCirclePath(const double& radius = 1, const int& int_points = 10);
         private:
             PathGenerator() {};
             void transformPatternPoints(const double& dx, const double& dy, const double& dyaw_inRad, std::vector<geometry_msgs::PoseStamped>& points);
