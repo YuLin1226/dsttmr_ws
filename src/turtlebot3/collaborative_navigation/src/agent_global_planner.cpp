@@ -1,7 +1,6 @@
 #include "agent_global_planner.h"
 #include <pluginlib/class_list_macros.h>
 #include <tf/tf.h>
-#include <std_msgs/Bool.h>
 #include <cmath>
 
 PLUGINLIB_EXPORT_CLASS(DSTTMR::AgentGlobalPlanner, nav_core::BaseGlobalPlanner)
@@ -34,22 +33,19 @@ void AgentGlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* 
         // set async
         private_nh_.setCallbackQueue(&callbackQueue_);
         asyncSpinner_.start();
-        // get the costmap
-        costmap_ros_ = costmap_ros;
-        costmap_ = costmap_ros_->getCostmap();
-        world_model_ = new base_local_planner::CostmapModel(*costmap_);
-
+        // tf
+        private_nh_.param("/own_frame_name", own_frame_name_, "/first_robot_base_footprint");
+        private_nh_.param("/partner_frame_name", partner_frame_name_, "/second_robot_base_footprint");
+        own_tf_listener_ = std::make_shared<TF_LISTENER>("/map", own_frame_name_);
+        partner_tf_listener_ = std::make_shared<TF_LISTENER>("/map", partner_frame_name_);
+        // pub & sub
         ros::NodeHandle nh;
-        
-        // initialize publishers and subscribers
-        waypoint_with_orientation_sub_ = private_nh_.subscribe("/global_way_points", 100, &WaypointGlobalPlanner::waypointWithOrientationCallback, this);
-        waypoint_speed_mode_sub_ = private_nh_.subscribe("/global_way_points_and_speed", 100, &WaypointGlobalPlanner::waypointArrayAndSpeedCallback, this);
-        receive_waypoint_pub_ = private_nh_.advertise<std_msgs::Bool>("/waypoints_received", 1);
+        system_global_plan_sub_ = private_nh_.subscribe("/global_way_points", 100, &AgentGlobalPlanner::systemGlobalPlanCallback, this);
         goal_pub_ = nh.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1);
         plan_pub_ = private_nh_.advertise<nav_msgs::Path>("global_plan", 1);
-
-        initialized_ = true;
+    
         ROS_INFO("Waypoint planner has been initialized");
+        initialized_ = true;
     }
     else
     {
@@ -99,7 +95,7 @@ void AgentGlobalPlanner::interpolatePath(nav_msgs::Path& path)
     path.poses = temp_path;
 }
 
-void AgentGlobalPlanner::waypointWithOrientationCallback(const geometry_msgs::PoseStamped::ConstPtr& waypoint)
+void AgentGlobalPlanner::systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& plan)
 {
     if (clear_waypoints_)
     {
@@ -136,6 +132,23 @@ void AgentGlobalPlanner::waypointWithOrientationCallback(const geometry_msgs::Po
     visualization_->createAndPublishArrowMarkersFromPath(waypoints_);
 }
 
+void AgentGlobalPlanner::computeAgentGlobalPlan(nav_msgs::Path &path)
+{
+    auto robot_distance = getRobotDistance();
+}
+
+double AgentGlobalPlanner::getRobotDistance()
+{
+    double dist(0.0);
+    double own_position_x, own_position_y, own_rotation_yaw;
+    double partner_position_x, partner_position_y, partner_rotation_yaw;
+    own_tf_listener_->updateRobotPose(own_position_x, own_position_y, own_rotation_yaw);
+    partner_tf_listener_->updateRobotPose(partner_position_x, partner_position_y, partner_rotation_yaw);
+    double dx = own_position_x - partner_position_x;
+    double dy = own_position_y - partner_position_y;
+    dist = sqrt(dx*dx + dy*dy);
+    return dist;
+}
 
 
 } // namespace DSTTMR
