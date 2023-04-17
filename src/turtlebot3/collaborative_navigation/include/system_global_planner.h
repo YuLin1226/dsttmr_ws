@@ -3,7 +3,6 @@
 
 #include <ros/ros.h>
 #include "path_generator.h"
-#include "collaborative_navigation/System_global_plan.h"
 
 namespace DSTTMR
 {

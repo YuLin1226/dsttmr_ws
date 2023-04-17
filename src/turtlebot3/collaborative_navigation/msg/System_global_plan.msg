@@ -1,1 +1,0 @@
-nav_msgs/Path path_points
