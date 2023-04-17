@@ -95,7 +95,7 @@ void AgentGlobalPlanner::interpolatePath(nav_msgs::Path& path)
     path.poses = temp_path;
 }
 
-void AgentGlobalPlanner::systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& plan)
+void AgentGlobalPlanner::systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& system_path)
 {
     if (clear_waypoints_)
     {
@@ -132,9 +132,11 @@ void AgentGlobalPlanner::systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr
     visualization_->createAndPublishArrowMarkersFromPath(waypoints_);
 }
 
-void AgentGlobalPlanner::computeAgentGlobalPlan(nav_msgs::Path &path)
+void AgentGlobalPlanner::computeAgentGlobalPlan(nav_msgs::Path &system_path)
 {
     auto robot_distance = getRobotDistance();
+    nav_msgs::Path front_agent_path, rear_agent_path;
+    computeAgentsGlobalPlan(front_agent_path, rear_agent_path, system_path, robot_distance);
 }
 
 double AgentGlobalPlanner::getRobotDistance()
@@ -150,6 +152,24 @@ double AgentGlobalPlanner::getRobotDistance()
     return dist;
 }
 
+void AgentGlobalPlanner::computeAgentsGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path, nav_msgs::Path &system_path, double& robot_distance)
+{
+    front_agent_path.header = system_path.header;
+    rear_agent_path.header = system_path.header;
+    for(auto& pose : system_path.poses)
+    {
+        // calculate front robot pose
+        // calculate rear robot pose
+        // about orientation, we can follow the original one.
+    }
+}
+
+void AgentGlobalPlanner::selectAgentGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path)
+{
+    double own_position_x, own_position_y, own_rotation_yaw;
+    own_tf_listener_->updateRobotPose(own_position_x, own_position_y, own_rotation_yaw);
+    // design a if-else logic to select a proper agent_path.
+}
 
 } // namespace DSTTMR
 

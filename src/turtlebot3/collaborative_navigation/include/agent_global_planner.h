@@ -10,6 +10,7 @@
 #include <string>
 #include <memory>
 #include "tf_listener.h"
+#include <vector>
 
 
 namespace DSTTMR
@@ -28,10 +29,12 @@ namespace DSTTMR
                       std::vector<geometry_msgs::PoseStamped> &plan);
 
     private:
-        void systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& plan);
+        void systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& system_path);
         void interpolatePath(nav_msgs::Path &path);
-        void computeAgentGlobalPlan(nav_msgs::Path &path);
+        void computeAgentGlobalPlan(nav_msgs::Path &system_path);
         double getRobotDistance();
+        void computeAgentsGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path, nav_msgs::Path &system_path, double& robot_distance);
+        void selectAgentGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path);
 
     private:
         // async setting
