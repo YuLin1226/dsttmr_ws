@@ -34,17 +34,22 @@ void AgentGlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* 
         // set async
         private_nh_.setCallbackQueue(&callbackQueue_);
         asyncSpinner_.start();
+    
         // tf
         private_nh_.param("/own_frame_name", own_frame_name_, "/first_robot_base_footprint");
         private_nh_.param("/partner_frame_name", partner_frame_name_, "/second_robot_base_footprint");
         own_tf_listener_ = std::make_shared<TF_LISTENER>("/map", own_frame_name_);
         partner_tf_listener_ = std::make_shared<TF_LISTENER>("/map", partner_frame_name_);
+    
         // pub & sub
         ros::NodeHandle nh;
         system_global_plan_sub_ = private_nh_.subscribe("/global_way_points", 100, &AgentGlobalPlanner::systemGlobalPlanCallback, this);
         goal_pub_ = nh.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1);
         plan_pub_ = private_nh_.advertise<nav_msgs::Path>("global_plan", 1);
     
+        // ptr
+        visualization_ = std::make_shared<DSTTMR::PathVisualization>(private_nh_);
+
         ROS_INFO("Waypoint planner has been initialized");
         initialized_ = true;
     }

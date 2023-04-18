@@ -11,6 +11,7 @@
 #include <memory>
 #include "tf_listener.h"
 #include <vector>
+#include "path_visualization.h"
 
 
 namespace DSTTMR
@@ -58,6 +59,8 @@ namespace DSTTMR
         std::string partner_frame_name_;
         std::shared_ptr<TF_LISTENER> own_tf_listener_;
         std::shared_ptr<TF_LISTENER> partner_tf_listener_;
+
+        std::shared_ptr<DSTTMR::PathVisualization> visualization_;
 
 
     };
