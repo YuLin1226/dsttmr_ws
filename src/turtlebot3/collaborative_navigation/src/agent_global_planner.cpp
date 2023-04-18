@@ -101,41 +101,18 @@ void AgentGlobalPlanner::interpolatePath(nav_msgs::Path& path)
     path.poses = temp_path;
 }
 
-void AgentGlobalPlanner::systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& system_path)
+void AgentGlobalPlanner::systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& system_path_ptr)
 {
-    if (clear_waypoints_)
-    {
-        waypoints_.clear();
-        clear_waypoints_ = false;
-    }
+    auto system_path = *system_path_ptr;
+    auto global_plan = computeAgentGlobalPlan(system_path);
 
-    if (waypoints_.size() > 0)
-    {
-        geometry_msgs::Pose *last_point = &(waypoints_.end()-1)->pose;
-        // calculate distance between latest two waypoints and check if it surpasses the threshold epsilon
-        double dist = hypot(waypoint->pose.position.x - last_point->position.x, waypoint->pose.position.y - last_point->position.y);
-        if (dist < epsilon_)
-        {
-            path_.header = waypoint->header;
-            path_.poses.clear();
-            path_.poses.insert(path_.poses.end(), waypoints_.begin(), waypoints_.end());
-            goal_pub_.publish(waypoints_.back());
-            clear_waypoints_ = true;
-            ROS_INFO("Published waypoint planner goal pose");
-            // create and publish markers
-            visualization_->createAndPublishArrowMarkersFromPath(waypoints_);
-            return;
-        }
-    }
-
-    // add waypoint to the waypoint vector
-    waypoints_.push_back(geometry_msgs::PoseStamped());
-    waypoints_.back().header = waypoint->header;
-    waypoints_.back().pose.position = waypoint->pose.position;
-    waypoints_.back().pose.orientation = waypoint->pose.orientation;
-
+    path_.header = global_plan.header;
+    path_.poses.clear();
+    path_.poses.insert(path_.poses.end(), global_plan.poses.begin(), global_plan.poses.end());
+    goal_pub_.publish(global_plan.poses.back());
+    ROS_INFO("Has published the agent_global_plan.");
     // create and publish markers
-    visualization_->createAndPublishArrowMarkersFromPath(waypoints_);
+    visualization_->createAndPublishArrowMarkersFromPath(global_plan.poses);
 }
 
 nav_msgs::Path AgentGlobalPlanner::computeAgentGlobalPlan(nav_msgs::Path &system_path)
