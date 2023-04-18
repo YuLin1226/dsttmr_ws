@@ -31,10 +31,10 @@ namespace DSTTMR
     private:
         void systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& system_path);
         void interpolatePath(nav_msgs::Path &path);
-        void computeAgentGlobalPlan(nav_msgs::Path &system_path);
+        nav_msgs::Path computeAgentGlobalPlan(nav_msgs::Path &system_path);
         double getRobotDistance();
-        void computeAgentsGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path, nav_msgs::Path &system_path, double& robot_distance);
-        void selectAgentGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path);
+        void computeRobotModelGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path, nav_msgs::Path &system_path, double& robot_distance);
+        nav_msgs::Path& getOwnGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path);
 
     private:
         // async setting

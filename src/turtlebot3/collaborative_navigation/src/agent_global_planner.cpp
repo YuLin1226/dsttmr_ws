@@ -2,6 +2,7 @@
 #include <pluginlib/class_list_macros.h>
 #include <tf/tf.h>
 #include <cmath>
+#include <eigen3/Eigen/Dense>
 
 PLUGINLIB_EXPORT_CLASS(DSTTMR::AgentGlobalPlanner, nav_core::BaseGlobalPlanner)
 
@@ -132,11 +133,13 @@ void AgentGlobalPlanner::systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr
     visualization_->createAndPublishArrowMarkersFromPath(waypoints_);
 }
 
-void AgentGlobalPlanner::computeAgentGlobalPlan(nav_msgs::Path &system_path)
+nav_msgs::Path AgentGlobalPlanner::computeAgentGlobalPlan(nav_msgs::Path &system_path)
 {
     auto robot_distance = getRobotDistance();
     nav_msgs::Path front_agent_path, rear_agent_path;
-    computeAgentsGlobalPlan(front_agent_path, rear_agent_path, system_path, robot_distance);
+    computeRobotModelGlobalPlan(front_agent_path, rear_agent_path, system_path, robot_distance);
+    auto& own_global_plan = getOwnGlobalPlan(front_agent_path, rear_agent_path);
+    return own_global_plan;
 }
 
 double AgentGlobalPlanner::getRobotDistance()
@@ -152,23 +155,54 @@ double AgentGlobalPlanner::getRobotDistance()
     return dist;
 }
 
-void AgentGlobalPlanner::computeAgentsGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path, nav_msgs::Path &system_path, double& robot_distance)
+void AgentGlobalPlanner::computeRobotModelGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path, nav_msgs::Path &system_path, double& robot_distance)
 {
     front_agent_path.header = system_path.header;
     rear_agent_path.header = system_path.header;
     for(auto& pose : system_path.poses)
     {
+        double pose_rotation_yaw;
+        pose_rotation_yaw = tf::getYaw(pose.pose.orientation);
         // calculate front robot pose
+        geometry_msgs::PoseStamped front_agent_path_pose;
+        front_agent_path_pose.header = pose.header;
+        front_agent_path_pose.pose.orientation = pose.pose.orientation;
+        front_agent_path_pose.pose.position.x = pose.pose.position.x + robot_distance*cos(pose_rotation_yaw);
+        front_agent_path_pose.pose.position.y = pose.pose.position.y + robot_distance*sin(pose_rotation_yaw);
+        front_agent_path_pose.pose.position.z = pose.pose.position.z;
+        front_agent_path.poses.emplace_back(front_agent_path_pose);
         // calculate rear robot pose
-        // about orientation, we can follow the original one.
+        geometry_msgs::PoseStamped rear_agent_path_pose;
+        rear_agent_path_pose.header = pose.header;
+        rear_agent_path_pose.pose.orientation = pose.pose.orientation;
+        rear_agent_path_pose.pose.position.x = pose.pose.position.x + robot_distance*cos(pose_rotation_yaw + M_PI);
+        rear_agent_path_pose.pose.position.y = pose.pose.position.y + robot_distance*cos(pose_rotation_yaw + M_PI);
+        rear_agent_path_pose.pose.position.z = pose.pose.position.z;
+        rear_agent_path.poses.emplace_back(rear_agent_path_pose);
     }
 }
 
-void AgentGlobalPlanner::selectAgentGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path)
+nav_msgs::Path& AgentGlobalPlanner::getOwnGlobalPlan(nav_msgs::Path &front_agent_path, nav_msgs::Path &rear_agent_path)
 {
     double own_position_x, own_position_y, own_rotation_yaw;
+    double partner_position_x, partner_position_y, partner_rotation_yaw;
     own_tf_listener_->updateRobotPose(own_position_x, own_position_y, own_rotation_yaw);
-    // design a if-else logic to select a proper agent_path.
+    partner_tf_listener_->updateRobotPose(partner_position_x, partner_position_y, partner_rotation_yaw);
+    // if((front - rear).dot(self - partner) > 0) self is front.
+    Eigen::Vector2d path_vector(
+        front_agent_path.poses.front().pose.position.x - rear_agent_path.poses.front().pose.position.x,
+        front_agent_path.poses.front().pose.position.y - rear_agent_path.poses.front().pose.position.y);
+    Eigen::Vector2d robot_vector(
+        own_position_x - partner_position_x,
+        own_position_y - partner_position_y);
+    if(path_vector.dot(robot_vector) > 0)
+    {
+        return front_agent_path;
+    }
+    else
+    {
+        return rear_agent_path;
+    }
 }
 
 } // namespace DSTTMR
