@@ -10,9 +10,7 @@ namespace DSTTMR
 {
     
 AgentGlobalPlanner::AgentGlobalPlanner()
-: costmap_ros_(NULL)
-, initialized_(false)
-, clear_waypoints_(false)
+: initialized_(false)
 , private_nh_("~")
 , callbackQueue_(true)
 , asyncSpinner_(NUM_THREADS, &callbackQueue_)

@@ -49,11 +49,8 @@ namespace DSTTMR
         ros::Publisher plan_pub_;
         // others
         bool initialized_;
-        double epsilon_;
         int waypoints_per_meter_;
-        std::vector<geometry_msgs::PoseStamped> waypoints_;
         nav_msgs::Path path_;
-        bool clear_waypoints_;
 
         std::string own_frame_name_;
         std::string partner_frame_name_;
