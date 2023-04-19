@@ -45,6 +45,18 @@ target_include_directories(global_planner_lib PUBLIC
 target_link_libraries(global_planner_lib 
   ${catkin_LIBRARIES}
 )
+add_library(agent_global_planner
+  src/agent_global_planner.cpp
+)
+target_include_directories(agent_global_planner PUBLIC 
+  include/collaborative_navigation
+  ${catkin_INCLUDE_DIRS}
+)
+target_link_libraries(agent_global_planner
+  global_planner_lib 
+  ${catkin_LIBRARIES}
+)
+
 # EXECUTE
 add_executable(system_global_planner_node
   src/system_global_planner.cpp

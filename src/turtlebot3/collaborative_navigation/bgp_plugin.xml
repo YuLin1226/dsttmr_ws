@@ -1,4 +1,4 @@
-<library path="lib/libwaypoint_global_planner">
+<library path="lib/libagent_global_planner">
   <class
     name="DSTTMR/AgentGlobalPlanner"
     type="DSTTMR::AgentGlobalPlanner"
