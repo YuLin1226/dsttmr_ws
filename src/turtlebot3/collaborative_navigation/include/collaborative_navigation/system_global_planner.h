@@ -30,7 +30,7 @@ namespace DSTTMR
             SystemGlobalPlanner(ros::NodeHandle& private_nh);
             void publishGlobalPlan();
             
-    }
+    };
 } // namespace DSTTMR
 
 

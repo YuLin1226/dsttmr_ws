@@ -45,9 +45,10 @@ namespace DSTTMR
         return true;
     }
 
-    std::vector<geometry_msgs::PoseStamped> PathGenerator::createCirclePath(const double& radius = 1, const int& int_points = 10)
+    std::vector<geometry_msgs::PoseStamped> PathGenerator::createCirclePath(const double& radius, const int& int_points)
     {
-
+        std::vector<geometry_msgs::PoseStamped> path;
+        return path;
     }
 
     // std::vector<geometry_msgs::PoseStamped> PathGenerator::createNormalWorkTurnRightPath(const nav_msgs::Path& waypoints, double radius, int num_points)
@@ -99,12 +100,7 @@ namespace DSTTMR
             double new_y = s*point.pose.position.x + c*point.pose.position.y + dy;
             point.pose.position.x = new_x;
             point.pose.position.y = new_y;
-
-            double useless_roll, useless_pitch, old_yaw_inRad;
-            MathTools::MathTool::transformQuaternionToEuler(point.pose.orientation, 
-                                    useless_roll,
-                                    useless_pitch,
-                                    old_yaw_inRad);
+            double old_yaw_inRad = tf::getYaw(point.pose.orientation);
             point.pose.orientation = tf::createQuaternionMsgFromYaw(old_yaw_inRad + dyaw_inRad);
         }
     }
