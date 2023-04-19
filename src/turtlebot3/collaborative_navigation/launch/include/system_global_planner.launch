@@ -1,0 +1,6 @@
+<launch>
+
+    <node pkg="collaborative_navigation" type="system_global_planner_node" name="system_global_planner_node" output="screen">
+    </node>
+
+</launch>
