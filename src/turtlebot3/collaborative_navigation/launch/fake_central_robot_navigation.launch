@@ -6,7 +6,7 @@
 
   <!-- FIRST ROBOT -->
     <!-- set topics -->
-    <arg name="first_odom_topic" default="/first_robot_odom" />
+    <arg name="first_odom_topic" default="/first_robot/odom" />
     <!-- set topics -->
     <arg name="first_navigation_cmd_topic" default="/first_robot/cmd_vel" />
     <!-- set frame_id -->
@@ -16,7 +16,7 @@
 
   <!-- SECOND ROBOT -->
     <!-- set topics -->
-    <arg name="second_odom_topic" default="/second_robot_odom" />
+    <arg name="second_odom_topic" default="/second_robot/odom" />
     <!-- set topics -->
     <arg name="second_navigation_cmd_topic" default="/second_robot/cmd_vel" />
     <!-- set frame_id -->

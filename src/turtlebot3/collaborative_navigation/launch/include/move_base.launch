@@ -15,13 +15,13 @@
     <arg name="first_cmd_vel_topic" default="cmd_vel" />
     <!-- planners, costmaps, etc -->
     <node pkg="move_base" type="move_base" name="first_move_base" respawn="true" output="screen" clear_params="true">
-      <rosparam file="$(dirname)/../../config/move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(dirname)/../../config/move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(dirname)/../../config/move_base/local_costmap_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(dirname)/../../config/move_base/global_costmap_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(dirname)/../../config/move_base/planners.yaml" command="load" />
-      <rosparam file="$(dirname)/../../config/move_base/controllers.yaml" command="load" />
-      <rosparam file="$(dirname)/../../config/move_base/recovery_behaviors.yaml" command="load" />
+      <rosparam file="$(dirname)/../../config/move_base/first_robot_param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(dirname)/../../config/move_base/first_robot_param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(dirname)/../../config/move_base/first_robot_param/local_costmap_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(dirname)/../../config/move_base/first_robot_param/global_costmap_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(dirname)/../../config/move_base/first_robot_param/planners.yaml" command="load" />
+      <rosparam file="$(dirname)/../../config/move_base/first_robot_param/controllers.yaml" command="load" />
+      <rosparam file="$(dirname)/../../config/move_base/first_robot_param/recovery_behaviors.yaml" command="load" />
 
       <!-- reset frame_id parameters using user input data -->
       <param name="global_costmap/global_frame" value="$(arg first_global_frame_id)" unless="$(arg no_static_map)" />
@@ -54,13 +54,13 @@
     <arg name="second_cmd_vel_topic" default="cmd_vel" />
     <!-- planners, costmaps, etc -->
     <node pkg="move_base" type="move_base" name="second_move_base" respawn="true" output="screen" clear_params="true">
-      <rosparam file="$(dirname)/../../config/move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(dirname)/../../config/move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(dirname)/../../config/move_base/local_costmap_params.yaml" command="load" ns="local_costmap" />
-      <rosparam file="$(dirname)/../../config/move_base/global_costmap_params.yaml" command="load" ns="global_costmap" />
-      <rosparam file="$(dirname)/../../config/move_base/planners.yaml" command="load" />
-      <rosparam file="$(dirname)/../../config/move_base/controllers.yaml" command="load" />
-      <rosparam file="$(dirname)/../../config/move_base/recovery_behaviors.yaml" command="load" />
+      <rosparam file="$(dirname)/../../config/move_base/second_robot_param/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(dirname)/../../config/move_base/second_robot_param/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(dirname)/../../config/move_base/second_robot_param/local_costmap_params.yaml" command="load" ns="local_costmap" />
+      <rosparam file="$(dirname)/../../config/move_base/second_robot_param/global_costmap_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(dirname)/../../config/move_base/second_robot_param/planners.yaml" command="load" />
+      <rosparam file="$(dirname)/../../config/move_base/second_robot_param/controllers.yaml" command="load" />
+      <rosparam file="$(dirname)/../../config/move_base/second_robot_param/recovery_behaviors.yaml" command="load" />
 
       <!-- reset frame_id parameters using user input data -->
       <param name="global_costmap/global_frame" value="$(arg second_global_frame_id)" unless="$(arg no_static_map)" />
@@ -74,7 +74,7 @@
       <param name="local_costmap/robot_base_frame" value="$(arg second_base_frame_id)"/>
       <param name="TebLocalPlannerROS/odom_topic" value="$(arg second_odom_topic)"/>
       <param name="TebLocalPlannerROS/map_frame" value="$(arg second_odom_frame_id)"/>
-
+    
       <remap from="map" to="$(arg second_map_topic)" />
       <remap from="odom" to="$(arg second_odom_topic)"/>
       <remap from="cmd_vel" to="$(arg second_cmd_vel_topic)"/>
