@@ -10,7 +10,7 @@ controller_patience: 3.0
 
 TebLocalPlannerROS:  
 # https://github.com/neobotix/neo_mpo_700/blob/master/configs/navigation/move_base/local_planner/teb_local_planner/teb_planner.yaml
- odom_topic: fake_central_odom
+ odom_topic: first_robot/odom
     
 #  via_points_ordered: False
  global_plan_prune_distance: 1
