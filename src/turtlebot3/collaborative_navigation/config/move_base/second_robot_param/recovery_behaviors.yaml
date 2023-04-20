@@ -1,0 +1,50 @@
+# Oscillation
+# oscillation_timeout: 30.0
+# oscillation_distance: 0.2 
+
+# mars_lite_2dnav/params_localization
+shutdown_costmaps: false
+
+#Time allowed for oscillation before starting robot recovery
+#operations
+oscillation_timeout: 0.0
+
+#Distance that robot should move to be considered which not be
+#oscillating. Moving above this distance will reset the oscillation_
+#timeout
+oscillation_distance: 0.15 
+
+#We plan to integrate recovery behaviors for turtlebot but currently those belong to gopher and still have to be adapted.
+## recovery behaviors; we avoid spinning, but we need a fall-back replanning
+recovery_behavior_enabled: false
+
+#recovery_behaviors:
+  #- name: 'super_conservative_reset1'
+    #type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  #- name: 'conservative_reset1'
+    #type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  #- name: 'aggressive_reset1'
+    #type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  #- name: 'clearing_rotation1'
+    #type: 'rotate_recovery/RotateRecovery'
+  #- name: 'super_conservative_reset2'
+    #type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  #- name: 'conservative_reset2'
+    #type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  #- name: 'aggressive_reset2'
+    #type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  #- name: 'clearing_rotation2'
+    #type: 'rotate_recovery/RotateRecovery'
+
+#super_conservative_reset1:
+  #reset_distance: 3.0
+#conservative_reset1:
+  #reset_distance: 1.5
+#aggressive_reset1:
+  #reset_distance: 0.0
+#super_conservative_reset2:
+  #reset_distance: 3.0
+#conservative_reset2:
+  #reset_distance: 1.5
+#aggressive_reset2:
+  #reset_distance: 0.0
