@@ -34,8 +34,8 @@ void AgentGlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* 
         asyncSpinner_.start();
     
         // tf
-        private_nh_.param("/own_frame_name", own_frame_name_, "/first_robot_base_footprint");
-        private_nh_.param("/partner_frame_name", partner_frame_name_, "/second_robot_base_footprint");
+        private_nh_.param<std::string>("/own_frame_name", own_frame_name_, "/first_robot_base_footprint");
+        private_nh_.param<std::string>("/partner_frame_name", partner_frame_name_, "/second_robot_base_footprint");
         own_tf_listener_ = std::make_shared<TF_LISTENER>("/map", own_frame_name_);
         partner_tf_listener_ = std::make_shared<TF_LISTENER>("/map", partner_frame_name_);
     
