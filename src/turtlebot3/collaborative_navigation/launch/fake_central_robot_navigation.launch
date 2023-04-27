@@ -43,6 +43,6 @@
 
   <!-- RVIZ -->
     <arg name="open_rviz" default="false" />
-    <node if="$(arg open_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(dirname)/../rviz/$(arg base_type)_nav.rviz" output="screen" />
+    <node if="$(arg open_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(dirname)/../rviz/collaborative.rviz" output="screen" />
 
 </launch>
