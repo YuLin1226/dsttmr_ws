@@ -27,6 +27,8 @@ namespace DSTTMR
         try
         {
             {
+                listener.waitForTransform(parent_frame_name_, child_frame_name_,
+                                        ros::Time::now(), ros::Duration(3.0));
                 listener.lookupTransform(parent_frame_name_, child_frame_name_, 
                                         ros::Time(0), transform);
                 position_x_ = transform.getOrigin().x();
