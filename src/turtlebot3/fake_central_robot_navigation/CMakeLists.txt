@@ -40,6 +40,19 @@ target_link_libraries(
   tf_listener
   ${catkin_LIBRARIES}
 )
+
+add_library(single_robot_cmd_vel_calculator
+  src/single_robot_cmd_vel_calculator.cpp
+)
+target_include_directories(single_robot_cmd_vel_calculator PUBLIC
+  include/fake_central_robot_navigation
+  ${catkin_INCLUDE_DIRS}
+)
+target_link_libraries(
+  single_robot_cmd_vel_calculator
+  ${catkin_LIBRARIES}
+)
+
 add_executable(multirobot_cmd_vel_calculator
   src/multirobot_cmd_vel_calculator.cpp
 )
@@ -50,6 +63,7 @@ target_include_directories(multirobot_cmd_vel_calculator PUBLIC
 target_link_libraries(
   multirobot_cmd_vel_calculator
   tf_listener
+  single_robot_cmd_vel_calculator
   ${catkin_LIBRARIES}
 )
 
