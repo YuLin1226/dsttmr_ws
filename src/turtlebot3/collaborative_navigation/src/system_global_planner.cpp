@@ -6,7 +6,7 @@ namespace DSTTMR
     SystemGlobalPlanner::SystemGlobalPlanner(ros::NodeHandle& private_nh)
     : private_nh_(private_nh)
     {
-        agents_global_planner_pub_ = private_nh_.advertise<nav_msgs::Path>("/global_plan", 1);
+        agents_global_planner_pub_ = private_nh_.advertise<nav_msgs::Path>("/system_global_plan", 1);
         // tf
         private_nh_.param<std::string>("/first_robot_frame_name", first_robot_frame_name_, "/first_robot_base_footprint");
         private_nh_.param<std::string>("/second_robot_frame_name", second_robot_frame_name_, "/second_robot_base_footprint");
@@ -37,6 +37,8 @@ namespace DSTTMR
         // step 5: publish
         nav_msgs::Path global_plan;
         // header?
+        global_plan.header.frame_id = "map";
+        global_plan.header.stamp = ros::Time::now();
         global_plan.poses = path_points;
         agents_global_planner_pub_.publish(global_plan);
     }

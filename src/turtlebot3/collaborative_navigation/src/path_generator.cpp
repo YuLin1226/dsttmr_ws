@@ -53,7 +53,7 @@ namespace DSTTMR
             geometry_msgs::PoseStamped point;
             point.header.seq = uint32_t(i);
             point.header.stamp = ros::Time::now();
-            point.header.frame_id = "";
+            point.header.frame_id = "map";
             point.pose.position.x = radius*cos(i/num_points*M_PI);
             point.pose.position.y = radius*sin(i/num_points*M_PI);
             double yaw_inRad = (M_PI/2 + i/num_points*M_PI);

@@ -15,7 +15,7 @@ namespace DSTTMR
         visualization_msgs::MarkerArray markers;
         visualization_msgs::Marker marker;
         marker.header = path[0].header;
-        marker.ns = "/move_base/waypoint_global_planner";
+        marker.ns = "/move_base/agent_waypoints";
         marker.type = visualization_msgs::Marker::SPHERE;
         marker.action = visualization_msgs::Marker::DELETEALL;
         marker.scale.x = 0.2;
@@ -75,7 +75,7 @@ namespace DSTTMR
             marker.pose = path[i].pose;
             markers.markers.push_back(marker);
         }
-
+        ROS_INFO("PUBLISH MARKER.");
         visualize_path_publisher_.publish(markers);
     }
 
