@@ -4,45 +4,36 @@
     <include file="$(arg system_global_planner_include)">
     </include>
 
-  <!-- FIRST ROBOT -->
-    <!-- set topics -->
-    <arg name="first_odom_topic" default="/first_robot/odom" />
-    <!-- set topics -->
-    <arg name="first_navigation_cmd_topic" default="/first_robot/cmd_vel" />
-    <!-- set frame_id -->
-    <arg name="first_global_frame_id" default="map" />
-    <arg name="first_odom_frame_id" default="first_robot_odom" />
-    <arg name="first_base_frame_id" default="first_robot_base_footprint" />
+  <!-- 1st MoveBase -->
+    <group ns="first_robot">
+      <arg name="move_base_include" default="$(dirname)/../launch/include/move_base.launch" />
+      <include file="$(arg move_base_include)">
+        <!-- 1st -->
+        <arg name="global_frame_id" value="map" />
+        <arg name="odom_frame_id" value="first_robot_odom" />
+        <arg name="base_frame_id" value="first_robot_base_footprint" />
+        <arg name="odom_topic" value="/first_robot/odom" />
+        <arg name="cmd_vel_topic" value="/first_robot/cmd_vel" />
+        <arg name="robot_param_source" value="first_robot_param"/>
+      </include>
+    </group>
 
-  <!-- SECOND ROBOT -->
-    <!-- set topics -->
-    <arg name="second_odom_topic" default="/second_robot/odom" />
-    <!-- set topics -->
-    <arg name="second_navigation_cmd_topic" default="/second_robot/cmd_vel" />
-    <!-- set frame_id -->
-    <arg name="second_global_frame_id" default="map" />
-    <arg name="second_odom_frame_id" default="second_robot_odom" />
-    <arg name="second_base_frame_id" default="second_robot_base_footprint" />
-
-  <!-- Navigation parameter files -->
-    <arg name="move_base_include" default="$(dirname)/../launch/include/move_base.launch" />
-    <include file="$(arg move_base_include)">
-      <!-- 1st -->
-      <arg name="first_global_frame_id" value="$(arg first_global_frame_id)" />
-      <arg name="first_odom_frame_id" value="$(arg first_odom_frame_id)" />
-      <arg name="first_base_frame_id" value="$(arg first_base_frame_id)" />
-      <arg name="first_odom_topic" value="$(arg first_odom_topic)" />
-      <arg name="first_cmd_vel_topic" value="$(arg first_navigation_cmd_topic)" />
-      <!-- 2nd -->
-      <arg name="second_global_frame_id" value="$(arg second_global_frame_id)" />
-      <arg name="second_odom_frame_id" value="$(arg second_odom_frame_id)" />
-      <arg name="second_base_frame_id" value="$(arg second_base_frame_id)" />
-      <arg name="second_odom_topic" value="$(arg second_odom_topic)" />
-      <arg name="second_cmd_vel_topic" value="$(arg second_navigation_cmd_topic)" />
-    </include>
+  <!-- 2nd MoveBase -->
+    <group ns="second_robot">
+      <arg name="move_base_include" default="$(dirname)/../launch/include/move_base.launch" />
+      <include file="$(arg move_base_include)">
+        <!-- 1st -->
+        <arg name="global_frame_id" value="map" />
+        <arg name="odom_frame_id" value="second_robot_odom" />
+        <arg name="base_frame_id" value="second_robot_base_footprint" />
+        <arg name="odom_topic" value="/second_robot/odom" />
+        <arg name="cmd_vel_topic" value="/second_robot/cmd_vel" />
+        <arg name="robot_param_source" value="second_robot_param"/>
+      </include>
+    </group>
 
   <!-- RVIZ -->
     <arg name="open_rviz" default="false" />
     <node if="$(arg open_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(dirname)/../rviz/collaborative.rviz" output="screen" />
-
+  
 </launch>
