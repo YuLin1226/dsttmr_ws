@@ -23,6 +23,7 @@ namespace DSTTMR
             void interpolatePath(std::vector<geometry_msgs::PoseStamped>& waypoints);
             // customized pattern path
             std::vector<geometry_msgs::PoseStamped> createCirclePath(const double& radius = 1, const int& num_points = 20);
+            std::vector<geometry_msgs::PoseStamped> createStraightPath(const double& start_pose_x = 1, const double& start_pose_y = 1, const double& start_pose_yaw = 1, const double& length = 1);
         private:
             PathGenerator() {};
     };

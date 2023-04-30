@@ -63,6 +63,31 @@ namespace DSTTMR
         return path;
     }
 
+    std::vector<geometry_msgs::PoseStamped> PathGenerator::createStraightPath(const double& start_pose_x, const double& start_pose_y, const double& start_pose_yaw, const double& length)
+    {
+        std::vector<geometry_msgs::PoseStamped> path;
+
+        geometry_msgs::PoseStamped start_point;
+        start_point.header.seq = 0;
+        start_point.header.stamp = ros::Time::now();
+        start_point.header.frame_id = "map";
+        start_point.pose.position.x = start_pose_x;
+        start_point.pose.position.y = start_pose_y;
+        start_point.pose.orientation = tf::createQuaternionMsgFromYaw(start_pose_yaw);
+        path.emplace_back(start_point);
+
+        geometry_msgs::PoseStamped end_point;
+        end_point.header.seq = 0;
+        end_point.header.stamp = ros::Time::now();
+        end_point.header.frame_id = "map";
+        end_point.pose.position.x = start_pose_x + length * cos(start_pose_yaw);
+        end_point.pose.position.y = start_pose_y + length * sin(start_pose_yaw);
+        end_point.pose.orientation = tf::createQuaternionMsgFromYaw(start_pose_yaw);
+        path.emplace_back(end_point);
+        
+        return path;
+    }
+
     void PathGenerator::transformPatternPoints(const double& dx, const double& dy, const double& dyaw_inRad, std::vector<geometry_msgs::PoseStamped>& points)
     {
         double c = cos(dyaw_inRad);
