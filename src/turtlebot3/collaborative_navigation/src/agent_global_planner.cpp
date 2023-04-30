@@ -42,7 +42,7 @@ void AgentGlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* 
         // pub & sub
         ros::NodeHandle nh;
         system_global_plan_sub_ = private_nh_.subscribe("/system_global_plan", 100, &AgentGlobalPlanner::systemGlobalPlanCallback, this);
-        goal_pub_ = nh.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1);
+        goal_pub_ = nh.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 1);
         plan_pub_ = private_nh_.advertise<nav_msgs::Path>("global_plan", 1);
     
         // ptr
