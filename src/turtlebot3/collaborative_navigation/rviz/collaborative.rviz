@@ -4,11 +4,10 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1/Frames1
         - /Navigation1
         - /Navigation1/2ndRobotNav1
         - /Navigation1/1stRobotNav1
-        - /Navigation1/1stRobotNav1/MarkerArray1
-        - /SystemPath1
       Splitter Ratio: 0.5
     Tree Height: 746
   - Class: rviz/Selection
@@ -66,10 +65,44 @@ Visualization Manager:
       Use Timestamp: false
       Value: true
     - Class: rviz/TF
-      Enabled: false
+      Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
+        first_robot_base_footprint:
+          Value: true
+        first_robot_base_link:
+          Value: false
+        first_robot_base_scan:
+          Value: false
+        first_robot_caster_back_link:
+          Value: false
+        first_robot_imu_link:
+          Value: false
+        first_robot_odom:
+          Value: false
+        first_robot_wheel_left_link:
+          Value: false
+        first_robot_wheel_right_link:
+          Value: false
+        map:
+          Value: true
+        second_robot_base_footprint:
+          Value: true
+        second_robot_base_link:
+          Value: false
+        second_robot_base_scan:
+          Value: false
+        second_robot_caster_back_link:
+          Value: false
+        second_robot_imu_link:
+          Value: false
+        second_robot_odom:
+          Value: false
+        second_robot_wheel_left_link:
+          Value: false
+        second_robot_wheel_right_link:
+          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -77,9 +110,35 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        map:
+          first_robot_odom:
+            first_robot_base_footprint:
+              first_robot_base_link:
+                first_robot_base_scan:
+                  {}
+                first_robot_caster_back_link:
+                  {}
+                first_robot_imu_link:
+                  {}
+                first_robot_wheel_left_link:
+                  {}
+                first_robot_wheel_right_link:
+                  {}
+          second_robot_odom:
+            second_robot_base_footprint:
+              second_robot_base_link:
+                second_robot_base_scan:
+                  {}
+                second_robot_caster_back_link:
+                  {}
+                second_robot_imu_link:
+                  {}
+                second_robot_wheel_left_link:
+                  {}
+                second_robot_wheel_right_link:
+                  {}
       Update Interval: 0
-      Value: false
+      Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -221,7 +280,7 @@ Visualization Manager:
               Marker Topic: /first_robot/move_base/waypoints
               Name: MarkerArray
               Namespaces:
-                /move_base/waypoint_global_planner: true
+                {}
               Queue Size: 100
               Value: true
           Enabled: true
@@ -280,7 +339,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.061439514160156
+      Distance: 7.27810001373291
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -288,9 +347,9 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.7620866894721985
-        Y: -0.4077852964401245
-        Z: -0.13441912829875946
+        X: 1.2914133071899414
+        Y: -0.7446582913398743
+        Z: -0.13388782739639282
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
