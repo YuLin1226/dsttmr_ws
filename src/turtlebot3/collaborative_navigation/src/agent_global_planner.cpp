@@ -147,16 +147,16 @@ void AgentGlobalPlanner::computeRobotModelGlobalPlan(nav_msgs::Path &front_agent
         geometry_msgs::PoseStamped front_agent_path_pose;
         front_agent_path_pose.header = pose.header;
         front_agent_path_pose.pose.orientation = pose.pose.orientation;
-        front_agent_path_pose.pose.position.x = pose.pose.position.x + robot_distance*cos(pose_rotation_yaw);
-        front_agent_path_pose.pose.position.y = pose.pose.position.y + robot_distance*sin(pose_rotation_yaw);
+        front_agent_path_pose.pose.position.x = pose.pose.position.x + robot_distance/2*cos(pose_rotation_yaw);
+        front_agent_path_pose.pose.position.y = pose.pose.position.y + robot_distance/2*sin(pose_rotation_yaw);
         front_agent_path_pose.pose.position.z = pose.pose.position.z;
         front_agent_path.poses.emplace_back(front_agent_path_pose);
         // calculate rear robot pose
         geometry_msgs::PoseStamped rear_agent_path_pose;
         rear_agent_path_pose.header = pose.header;
         rear_agent_path_pose.pose.orientation = pose.pose.orientation;
-        rear_agent_path_pose.pose.position.x = pose.pose.position.x + robot_distance*cos(pose_rotation_yaw + M_PI);
-        rear_agent_path_pose.pose.position.y = pose.pose.position.y + robot_distance*cos(pose_rotation_yaw + M_PI);
+        rear_agent_path_pose.pose.position.x = pose.pose.position.x + robot_distance/2*cos(pose_rotation_yaw + M_PI);
+        rear_agent_path_pose.pose.position.y = pose.pose.position.y + robot_distance/2*sin(pose_rotation_yaw + M_PI);
         rear_agent_path_pose.pose.position.z = pose.pose.position.z;
         rear_agent_path.poses.emplace_back(rear_agent_path_pose);
     }
