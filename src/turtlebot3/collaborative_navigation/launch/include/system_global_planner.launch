@@ -1,6 +1,9 @@
 <launch>
 
     <node pkg="collaborative_navigation" type="system_global_planner_node" name="system_global_planner_node" output="screen">
+        <param name="/system_global_plan_first_position_x" value="1.00"/>
+        <param name="/system_global_plan_first_position_y" value="1.00"/>
+        <param name="/system_global_plan_first_position_yaw" value="0.00"/>
     </node>
 
 </launch>
