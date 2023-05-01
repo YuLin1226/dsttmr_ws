@@ -2,10 +2,11 @@
     
     <arg name="1st_robotName" default="first_robot" />
     <arg name="2nd_robotName" default="second_robot" />
+    <arg name="map_name" default="indoors12" />
 
     <!-- 1st robot localization launch -->
     <include file="$(find turtlebot3_slam)/launch/multiple_robots/robot_localization.launch">
-        <arg name="map_pbstream_file" default="$(find turtlebot3_slam)/maps/test.pbstream" />
+        <arg name="map_pbstream_file" default="$(find turtlebot3_slam)/maps/$(arg map_name).pbstream" />
         <arg name="scan_topic" value="$(arg 1st_robotName)/scan" />
         <arg name="odom_topic" value="$(arg 1st_robotName)/odom" />
         <arg name="imu_topic" value="$(arg 1st_robotName)/imu" />
@@ -15,15 +16,16 @@
 
     <!-- 2nd robot localization launch -->
     <include file="$(find turtlebot3_slam)/launch/multiple_robots/robot_localization.launch">
-        <arg name="map_pbstream_file" default="$(find turtlebot3_slam)/maps/test.pbstream" />
+        <arg name="map_pbstream_file" value="$(find turtlebot3_slam)/maps/$(arg map_name).pbstream" />
         <arg name="scan_topic" value="$(arg 2nd_robotName)/scan" />
         <arg name="odom_topic" value="$(arg 2nd_robotName)/odom" />
         <arg name="imu_topic" value="$(arg 2nd_robotName)/imu" />
-        <arg name="imu_carto_topic" default="$(arg 2nd_robotName)/flat_imu" />
+        <arg name="imu_carto_topic" value="$(arg 2nd_robotName)/flat_imu" />
         <arg name="robot_number" value="second" />
     </include>
 
     <!-- rviz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot3_slam)/rviz/multiple_robot_cartographer.rviz" />
+    <arg name="open_rviz" default="true" />
+    <node if="$(arg open_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot3_slam)/rviz/multiple_robot_cartographer.rviz" />
 
 </launch>
