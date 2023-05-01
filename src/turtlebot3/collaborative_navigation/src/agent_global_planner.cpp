@@ -41,6 +41,7 @@ void AgentGlobalPlanner::initialize(std::string name, costmap_2d::Costmap2DROS* 
     
         // pub & sub
         ros::NodeHandle nh;
+        waypoint_with_orientation_sub_ = private_nh_.subscribe("global_way_points", 100, &AgentGlobalPlanner::waypointWithOrientationCallback, this);
         system_global_plan_sub_ = private_nh_.subscribe("/system_global_plan", 100, &AgentGlobalPlanner::systemGlobalPlanCallback, this);
         goal_pub_ = nh.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 1);
         plan_pub_ = private_nh_.advertise<nav_msgs::Path>("global_plan", 1);
@@ -97,6 +98,47 @@ void AgentGlobalPlanner::interpolatePath(nav_msgs::Path& path)
 
     temp_path.push_back(path.poses.back());
     path.poses = temp_path;
+}
+
+void AgentGlobalPlanner::waypointWithOrientationCallback(const geometry_msgs::PoseStamped::ConstPtr& waypoint)
+{
+    if (clear_waypoints_)
+    {
+        waypoints_.clear();
+        clear_waypoints_ = false;
+    }
+
+    if (waypoints_.size() > 0)
+    {
+        geometry_msgs::Pose *last_point = &(waypoints_.end()-1)->pose;
+        // calculate distance between latest two waypoints and check if it surpasses the threshold epsilon
+        double dist = hypot(waypoint->pose.position.x - last_point->position.x, waypoint->pose.position.y - last_point->position.y);
+        if (dist < 0.3)
+        {
+            path_.header = waypoint->header;
+            path_.poses.clear();
+            path_.poses.insert(path_.poses.end(), waypoints_.begin(), waypoints_.end());
+            goal_pub_.publish(waypoints_.back());
+            clear_waypoints_ = true;
+            ROS_INFO("Published waypoint planner goal pose");
+            // create and publish markers
+            visualization_->createAndPublishArrowMarkersFromPath(waypoints_);
+            return;
+        }
+    }
+
+    // add waypoint to the waypoint vector
+    waypoints_.push_back(geometry_msgs::PoseStamped());
+
+    ROS_INFO_STREAM("Header: " << waypoint->header.frame_id << " " <<waypoint->header.seq << " " << waypoint->header.stamp);
+    ROS_INFO_STREAM("Pose: " << waypoint->pose.position.x << " " <<waypoint->pose.position.y);
+
+    waypoints_.back().header = waypoint->header;
+    waypoints_.back().pose.position = waypoint->pose.position;
+    waypoints_.back().pose.orientation = waypoint->pose.orientation;
+
+    // create and publish markers
+    visualization_->createAndPublishArrowMarkersFromPath(waypoints_);
 }
 
 void AgentGlobalPlanner::systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& system_path_ptr)

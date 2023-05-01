@@ -31,6 +31,7 @@ namespace DSTTMR
 
     private:
         void systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr& system_path);
+        void waypointWithOrientationCallback(const geometry_msgs::PoseStamped::ConstPtr& waypoint);
         void interpolatePath(nav_msgs::Path &path);
         nav_msgs::Path computeAgentGlobalPlan(nav_msgs::Path &system_path);
         double getRobotDistance();
@@ -44,7 +45,7 @@ namespace DSTTMR
         ros::CallbackQueue callbackQueue_;
         // ros setting
         ros::NodeHandle private_nh_;
-        ros::Subscriber system_global_plan_sub_;
+        ros::Subscriber system_global_plan_sub_, waypoint_with_orientation_sub_;
         ros::Publisher goal_pub_;
         ros::Publisher plan_pub_;
         // others
@@ -59,7 +60,8 @@ namespace DSTTMR
 
         std::shared_ptr<DSTTMR::PathVisualization> visualization_;
 
-
+        std::vector<geometry_msgs::PoseStamped> waypoints_;
+        bool clear_waypoints_{true};
     };
 
 } // namespace DSTTMR
