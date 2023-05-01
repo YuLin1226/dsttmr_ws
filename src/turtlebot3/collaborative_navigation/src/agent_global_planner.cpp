@@ -146,7 +146,18 @@ void AgentGlobalPlanner::systemGlobalPlanCallback(const nav_msgs::Path::ConstPtr
     auto system_path = *system_path_ptr;
     auto global_plan = computeAgentGlobalPlan(system_path);
 
-    path_.header = global_plan.header;
+    // update header to avoid teb error
+    path_.header.frame_id = global_plan.header.frame_id;
+    path_.header.seq = 0;
+    path_.header.stamp = ros::Time::now();
+    int seq = 0;
+    for( auto& pose : global_plan.poses)
+    {
+        pose.header.frame_id = global_plan.header.frame_id;
+        pose.header.seq = seq++;
+        pose.header.stamp = ros::Time::now();
+    }
+
     path_.poses.clear();
     path_.poses.insert(path_.poses.end(), global_plan.poses.begin(), global_plan.poses.end());
     goal_pub_.publish(global_plan.poses.back());
