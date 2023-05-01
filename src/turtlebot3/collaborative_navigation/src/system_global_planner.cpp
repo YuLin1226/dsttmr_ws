@@ -18,12 +18,14 @@ namespace DSTTMR
     {
         auto& path_generator = DSTTMR::PathGenerator::getInstance();
         // step 1: create template path.
-        auto path_points = path_generator.createCirclePath(5, 10);
+        // auto path_points = path_generator.createCirclePath(5, 10);
+        auto path_points = path_generator.createStraightPath(1.5, 0, 0, 1);
         // step 2: move & rotate path
         double init_x, init_y, init_yaw;
-        private_nh_.param<double>("/system_global_plan_first_position_x", init_x, 0.0);
-        private_nh_.param<double>("/system_global_plan_first_position_y", init_y, 0.0);
-        private_nh_.param<double>("/system_global_plan_first_rotation_yaw", init_yaw, 0.0);
+        private_nh_.param<double>("system_global_plan_first_position_x", init_x, 0.0);
+        private_nh_.param<double>("system_global_plan_first_position_y", init_y, 0.0);
+        private_nh_.param<double>("system_global_plan_first_rotation_yaw", init_yaw, 0.0);
+        ROS_INFO("Retrive system_global_plan origin: ( %f , %f , %f )",init_x, init_y, init_yaw);
         path_generator.transformPatternPoints(init_x, init_y, init_yaw, path_points);
         // step 3: interpolation
         path_generator.interpolatePath(path_points);
