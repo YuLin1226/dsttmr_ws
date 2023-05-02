@@ -98,10 +98,10 @@ TebLocalPlannerROS:
  min_samples: 3
  #Minimum number of samples
 
- global_plan_overwrite_orientation: true
+ global_plan_overwrite_orientation: false
  #Overwrite orientation of local subgoals provided by the global planner (since they often provide only a 2D path)
 
- global_plan_viapoint_sep: -1
+ global_plan_viapoint_sep: 0.1
  #If positive, via-points are extrected from the global plan (path-following mode). 
  #The value determines the resolution of the reference path (min. separation between each two consecutive via-points along the global plan, 
  #if negative (disabled). Refer to parameter weight_viapoint for adjusting the intensity. New in version 0.4
