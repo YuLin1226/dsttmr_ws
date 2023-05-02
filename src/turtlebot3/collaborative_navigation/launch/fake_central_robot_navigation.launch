@@ -15,6 +15,8 @@
         <arg name="odom_topic" value="/first_robot/odom" />
         <arg name="cmd_vel_topic" value="/first_robot/cmd_vel" />
         <arg name="robot_param_source" value="first_robot_param"/>
+        <arg name="own_frame_name" value="first_robot_base_footprint"/>
+        <arg name="partner_frame_name" value="second_robot_base_footprint"/>
       </include>
     </group>
 
@@ -29,11 +31,13 @@
         <arg name="odom_topic" value="/second_robot/odom" />
         <arg name="cmd_vel_topic" value="/second_robot/cmd_vel" />
         <arg name="robot_param_source" value="second_robot_param"/>
+        <arg name="own_frame_name" value="second_robot_base_footprint"/>
+        <arg name="partner_frame_name" value="first_robot_base_footprint"/>
       </include>
     </group>
 
   <!-- RVIZ -->
-    <arg name="open_rviz" default="false" />
+    <arg name="open_rviz" default="true" />
     <node if="$(arg open_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(dirname)/../rviz/collaborative.rviz" output="screen" />
   
 </launch>

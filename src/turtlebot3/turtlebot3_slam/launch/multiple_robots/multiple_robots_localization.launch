@@ -25,7 +25,7 @@
     </include>
 
     <!-- rviz -->
-    <arg name="open_rviz" default="true" />
+    <arg name="open_rviz" default="false" />
     <node if="$(arg open_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot3_slam)/rviz/multiple_robot_cartographer.rviz" />
 
 </launch>

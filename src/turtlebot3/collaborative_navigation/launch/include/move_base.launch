@@ -13,6 +13,9 @@
   <arg name="map_topic" default="/map" />
   <arg name="odom_topic" default="odom" />
   <arg name="cmd_vel_topic" default="cmd_vel" />
+  <!-- tf frame id -->
+  <arg name="own_frame_name" default="first_robot_base_footprint"/>
+  <arg name="partner_frame_name" default="second_robot_base_footprint"/>
   <!-- planners, costmaps, etc -->
   <node pkg="move_base" type="move_base" name="move_base" respawn="true" output="screen" clear_params="true">
     <rosparam file="$(dirname)/../../config/move_base/$(arg robot_param_source)/costmap_common_params.yaml" command="load" ns="global_costmap" />
@@ -35,6 +38,9 @@
     <param name="local_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
     <param name="TebLocalPlannerROS/odom_topic" value="$(arg odom_topic)"/>
     <param name="TebLocalPlannerROS/map_frame" value="$(arg odom_frame_id)"/>
+
+    <param name="own_frame_name" value="$(arg own_frame_name)"/>
+    <param name="partner_frame_name" value="$(arg partner_frame_name)"/>
 
     <remap from="map" to="$(arg map_topic)" />
     <remap from="odom" to="$(arg odom_topic)"/>
