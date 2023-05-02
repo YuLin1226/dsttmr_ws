@@ -134,7 +134,7 @@
   <joint name="$(arg robotName)_scan_joint" type="fixed">
     <parent link="$(arg robotName)_base_link"/>
     <child link="$(arg robotName)_base_scan"/>
-    <origin xyz="-0.032 0 0.172" rpy="0 0 0"/>
+    <origin xyz="-0.032 0 0.202" rpy="0 0 0"/>
   </joint>
 
   <link name="$(arg robotName)_base_scan">
@@ -146,12 +146,12 @@
       <material name="dark"/>
     </visual>
 
-    <collision>
+    <!-- <collision>
       <origin xyz="0.015 0 -0.0065" rpy="0 0 0"/>
       <geometry>
         <cylinder length="0.0315" radius="0.055"/>
       </geometry>
-    </collision>
+    </collision> -->
 
     <inertial>
       <mass value="0.114" />
